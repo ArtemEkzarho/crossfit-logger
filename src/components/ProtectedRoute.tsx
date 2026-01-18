@@ -1,5 +1,4 @@
-import { useAuth } from '@clerk/clerk-react'
-import { Navigate } from 'react-router-dom'
+import { useAuth, RedirectToSignIn } from '@clerk/clerk-react'
 import { CircularProgress, Box } from '@mui/material'
 
 interface ProtectedRouteProps {
@@ -25,7 +24,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!isSignedIn) {
-    return <Navigate to="/login" replace />
+    return <RedirectToSignIn />
   }
 
   return <>{children}</>
