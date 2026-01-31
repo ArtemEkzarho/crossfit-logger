@@ -1,7 +1,7 @@
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material'
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react'
-import { Outlet, useNavigate } from 'react-router-dom'
 import { FitnessCenter } from '@mui/icons-material'
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 export default function Layout() {
   const navigate = useNavigate()
