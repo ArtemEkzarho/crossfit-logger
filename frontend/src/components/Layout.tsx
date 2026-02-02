@@ -24,6 +24,9 @@ export default function Layout() {
               <Button color="inherit" onClick={() => navigate('/dashboard')}>
                 Dashboard
               </Button>
+              <Button color="inherit" onClick={() => navigate('/exercises')}>
+                Exercises
+              </Button>
               <UserButton />
             </SignedIn>
             <SignedOut>
