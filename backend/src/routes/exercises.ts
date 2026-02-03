@@ -13,7 +13,19 @@ router.get('/', async (req, res: Response) => {
     const { userId } = getAuth(req);
     const exercises = await Exercise.find({ userId })
       .sort({ date: -1 });
-    
+
+    res.json(exercises);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+// GET all exercises from all users for analytics
+router.get('/analytics/all', async (req, res: Response) => {
+  try {
+    const exercises = await Exercise.find({})
+      .sort({ date: -1 });
+
     res.json(exercises);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });

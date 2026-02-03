@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createExercise,
   deleteExercise,
+  getAllExercisesForAnalytics,
   getExercise,
   getExercises,
   updateExercise,
@@ -18,6 +19,19 @@ export function useExercises() {
       const token = await getToken()
       if (!token) throw new Error('Not authenticated')
       return getExercises(token)
+    },
+  })
+}
+
+export function useAllExercisesForAnalytics() {
+  const { getToken } = useAuth()
+
+  return useQuery({
+    queryKey: ['exercises', 'analytics', 'all'],
+    queryFn: async () => {
+      const token = await getToken()
+      if (!token) throw new Error('Not authenticated')
+      return getAllExercisesForAnalytics(token)
     },
   })
 }

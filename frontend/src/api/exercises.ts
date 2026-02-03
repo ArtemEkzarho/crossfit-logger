@@ -26,6 +26,10 @@ export async function getExercises(token: string): Promise<Exercise[]> {
   return fetchWithAuth(`${API_URL}/api/exercises`, {}, token)
 }
 
+export async function getAllExercisesForAnalytics(token: string): Promise<Exercise[]> {
+  return fetchWithAuth(`${API_URL}/api/exercises/analytics/all`, {}, token)
+}
+
 export async function getExercise(id: string, token: string): Promise<Exercise> {
   return fetchWithAuth(`${API_URL}/api/exercises/${id}`, {}, token)
 }
