@@ -1,8 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+// Allowed exercise names - extend this list as needed
+export const EXERCISE_NAMES = ['Deadlift', 'Power Clean'] as const;
+export type ExerciseName = typeof EXERCISE_NAMES[number];
+
 export interface IExercise extends Document {
   userId: string;
-  name: string;
+  name: ExerciseName;
   weight?: number;
   reps?: number;
   sets?: number;
@@ -20,7 +24,11 @@ const ExerciseSchema = new Schema<IExercise>({
   },
   name: {
     type: String,
-    required: true
+    required: true,
+    enum: {
+      values: EXERCISE_NAMES,
+      message: '{VALUE} is not a valid exercise. Allowed exercises: ' + EXERCISE_NAMES.join(', ')
+    }
   },
   weight: {
     type: Number

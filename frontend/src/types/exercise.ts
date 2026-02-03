@@ -1,7 +1,11 @@
+// Allowed exercise names - keep in sync with backend
+export const EXERCISE_NAMES = ['Deadlift', 'Power Clean'] as const
+export type ExerciseName = (typeof EXERCISE_NAMES)[number]
+
 export interface Exercise {
   _id: string
   userId: string
-  name: string
+  name: ExerciseName
   weight?: number
   reps?: number
   sets?: number
@@ -12,7 +16,7 @@ export interface Exercise {
 }
 
 export interface CreateExerciseData {
-  name: string
+  name: ExerciseName
   weight?: number
   reps?: number
   sets?: number
@@ -21,7 +25,7 @@ export interface CreateExerciseData {
 }
 
 export interface UpdateExerciseData {
-  name?: string
+  name?: ExerciseName
   weight?: number
   reps?: number
   sets?: number

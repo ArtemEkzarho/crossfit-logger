@@ -11,8 +11,13 @@ import {
   DialogContentText,
   DialogTitle,
   Fab,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
+  type SelectChangeEvent,
   Snackbar,
   Table,
   TableBody,
@@ -30,10 +35,11 @@ import {
   useExercises,
   useUpdateExercise,
 } from '../hooks/useExercises'
-import type { CreateExerciseData, Exercise } from '../types/exercise'
+import type { CreateExerciseData, Exercise, ExerciseName } from '../types/exercise'
+import { EXERCISE_NAMES } from '../types/exercise'
 
 interface ExerciseFormData {
-  name: string
+  name: ExerciseName | ''
   weight: string
   reps: string
   sets: string
@@ -108,7 +114,13 @@ export default function Exercises() {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }))
   }
 
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    setFormData((prev) => ({ ...prev, name: e.target.value as ExerciseName }))
+  }
+
   const handleSubmit = async () => {
+    if (!formData.name) return
+
     const data: CreateExerciseData = {
       name: formData.name,
       weight: formData.weight ? Number(formData.weight) : undefined,
@@ -264,13 +276,21 @@ export default function Exercises() {
           <DialogTitle>{editingExercise ? 'Edit Exercise' : 'Add Exercise'}</DialogTitle>
           <DialogContent>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
-              <TextField
-                label="Exercise Name"
-                value={formData.name}
-                onChange={handleFormChange('name')}
-                required
-                fullWidth
-              />
+              <FormControl fullWidth required>
+                <InputLabel id="exercise-name-label">Exercise Name</InputLabel>
+                <Select
+                  labelId="exercise-name-label"
+                  value={formData.name}
+                  label="Exercise Name"
+                  onChange={handleSelectChange}
+                >
+                  {EXERCISE_NAMES.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField
                 label="Weight (kg)"
                 type="number"
