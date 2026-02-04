@@ -1,4 +1,13 @@
-import { Alert, Box, Card, CardContent, CircularProgress, Container, Grid, Typography } from '@mui/material'
+import {
+  Alert,
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  Container,
+  Grid,
+  Typography,
+} from '@mui/material'
 import { useMemo } from 'react'
 import {
   Area,
@@ -20,6 +29,7 @@ import type { Exercise } from '../types/exercise'
 const COLORS = {
   Deadlift: '#8884d8',
   'Power Clean': '#82ca9d',
+  'Bench Press': '#ff7c43',
 }
 
 function formatDate(dateStr: string): string {
@@ -47,7 +57,10 @@ function getWeightProgressionData(exercises: Exercise[]) {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   )
 
-  const dateMap = new Map<string, { date: string; Deadlift?: number; 'Power Clean'?: number }>()
+  const dateMap = new Map<
+    string,
+    { date: string; Deadlift?: number; 'Power Clean'?: number; 'Bench Press'?: number }
+  >()
 
   sortedExercises.forEach((exercise) => {
     const dateKey = exercise.date.split('T')[0]
@@ -71,7 +84,10 @@ function getVolumeData(exercises: Exercise[]) {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   )
 
-  const dateMap = new Map<string, { date: string; Deadlift?: number; 'Power Clean'?: number }>()
+  const dateMap = new Map<
+    string,
+    { date: string; Deadlift?: number; 'Power Clean'?: number; 'Bench Press'?: number }
+  >()
 
   sortedExercises.forEach((exercise) => {
     const dateKey = exercise.date.split('T')[0]
@@ -156,7 +172,12 @@ export default function Dashboard() {
                   </ResponsiveContainer>
                 ) : (
                   <Box
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '80%',
+                    }}
                   >
                     <Typography color="text.secondary">No data available</Typography>
                   </Box>
@@ -198,11 +219,24 @@ export default function Dashboard() {
                         dot={{ r: 4 }}
                         connectNulls
                       />
+                      <Line
+                        type="monotone"
+                        dataKey="Bench Press"
+                        stroke={COLORS['Bench Press']}
+                        strokeWidth={2}
+                        dot={{ r: 4 }}
+                        connectNulls
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
                   <Box
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '80%',
+                    }}
                   >
                     <Typography color="text.secondary">No data available</Typography>
                   </Box>
@@ -244,11 +278,24 @@ export default function Dashboard() {
                         fill={COLORS['Power Clean']}
                         fillOpacity={0.6}
                       />
+                      <Area
+                        type="monotone"
+                        dataKey="Bench Press"
+                        stackId="1"
+                        stroke={COLORS['Bench Press']}
+                        fill={COLORS['Bench Press']}
+                        fillOpacity={0.6}
+                      />
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
                   <Box
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '80%',
+                    }}
                   >
                     <Typography color="text.secondary">No data available</Typography>
                   </Box>

@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 // Allowed exercise names - extend this list as needed
-export const EXERCISE_NAMES = ['Deadlift', 'Power Clean'] as const;
+export const EXERCISE_NAMES = ['Deadlift', 'Power Clean', 'Bench Press'] as const;
 export type ExerciseName = typeof EXERCISE_NAMES[number];
 
 export interface IExercise extends Document {
