@@ -1,5 +1,5 @@
 import express, { Response } from 'express';
-import { requireAuth, getAuth } from '@clerk/express';
+import { clerkClient, requireAuth, getAuth } from '@clerk/express';
 import Exercise from '../models/Exercise';
 
 const router = express.Router();
@@ -23,10 +23,28 @@ router.get('/', async (req, res: Response) => {
 // GET all exercises from all users for analytics
 router.get('/analytics/all', async (req, res: Response) => {
   try {
-    const exercises = await Exercise.find({})
-      .sort({ date: -1 });
+    const exercises = await Exercise.find({}).sort({ date: -1 });
 
-    res.json(exercises);
+    const userIds = [...new Set(exercises.map((e) => e.userId))];
+    const userNameMap = new Map<string, string>();
+    await Promise.all(
+      userIds.map(async (id) => {
+        try {
+          const user = await clerkClient.users.getUser(id);
+          const name = [user.firstName, user.lastName].filter(Boolean).join(' ') || 'Unknown';
+          userNameMap.set(user.id, name);
+        } catch {
+          // user not found or Clerk error — skip
+        }
+      })
+    );
+
+    const enriched = exercises.map((e) => ({
+      ...e.toObject(),
+      userName: userNameMap.get(e.userId) || 'Unknown',
+    }));
+
+    res.json(enriched);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
