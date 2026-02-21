@@ -5,6 +5,7 @@ export type ExerciseName = (typeof EXERCISE_NAMES)[number]
 export interface Exercise {
   _id: string
   userId: string
+  userName?: string
   name: ExerciseName
   weight?: number
   reps?: number

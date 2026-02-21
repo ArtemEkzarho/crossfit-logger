@@ -1,19 +1,15 @@
 import {
   Alert,
   Box,
-  Card,
-  CardContent,
   CircularProgress,
   Container,
-  Grid,
+  Paper,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
   Legend,
   Line,
@@ -24,99 +20,68 @@ import {
   YAxis,
 } from 'recharts'
 import { useAllExercisesForAnalytics } from '../hooks/useExercises'
-import type { Exercise } from '../types/exercise'
+import type { Exercise, ExerciseName } from '../types/exercise'
+import { EXERCISE_NAMES } from '../types/exercise'
 
-const COLORS = {
-  Deadlift: '#8884d8',
-  'Power Clean': '#82ca9d',
-  'Bench Press': '#ff7c43',
-}
+const USER_COLORS = [
+  '#8884d8',
+  '#82ca9d',
+  '#ff7c43',
+  '#ffc658',
+  '#0088fe',
+  '#00c49f',
+  '#ff8042',
+  '#a4de6c',
+  '#d0ed57',
+  '#8dd1e1',
+]
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr)
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-function getExerciseFrequencyData(exercises: Exercise[]) {
-  const frequencyMap = new Map<string, number>()
+function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
+  const filtered = exercises
+    .filter((e) => e.name === selectedExercise && e.weight != null)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
-  exercises.forEach((exercise) => {
-    const count = frequencyMap.get(exercise.name) || 0
-    frequencyMap.set(exercise.name, count + 1)
-  })
+  const userNames = [...new Set(filtered.map((e) => e.userName || 'Unknown'))]
 
-  return Array.from(frequencyMap.entries()).map(([name, count]) => ({
-    name,
-    count,
-    fill: COLORS[name as keyof typeof COLORS] || '#8884d8',
-  }))
-}
+  const dateMap = new Map<string, Record<string, string | number>>()
 
-function getWeightProgressionData(exercises: Exercise[]) {
-  const sortedExercises = [...exercises].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  )
-
-  const dateMap = new Map<
-    string,
-    { date: string; Deadlift?: number; 'Power Clean'?: number; 'Bench Press'?: number }
-  >()
-
-  sortedExercises.forEach((exercise) => {
+  filtered.forEach((exercise) => {
     const dateKey = exercise.date.split('T')[0]
     const existing = dateMap.get(dateKey) || { date: formatDate(exercise.date) }
+    const name = exercise.userName || 'Unknown'
 
-    if (exercise.weight) {
-      const currentWeight = existing[exercise.name as keyof typeof COLORS]
-      if (!currentWeight || exercise.weight > currentWeight) {
-        existing[exercise.name as keyof typeof COLORS] = exercise.weight
-      }
+    const current = existing[name] as number | undefined
+    if (!current || exercise.weight! > current) {
+      existing[name] = exercise.weight!
     }
 
     dateMap.set(dateKey, existing)
   })
 
-  return Array.from(dateMap.values())
-}
+  const data = Array.from(dateMap.values())
 
-function getVolumeData(exercises: Exercise[]) {
-  const sortedExercises = [...exercises].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  )
-
-  const dateMap = new Map<
-    string,
-    { date: string; Deadlift?: number; 'Power Clean'?: number; 'Bench Press'?: number }
-  >()
-
-  sortedExercises.forEach((exercise) => {
-    const dateKey = exercise.date.split('T')[0]
-    const existing = dateMap.get(dateKey) || { date: formatDate(exercise.date) }
-
-    const volume = (exercise.sets || 1) * (exercise.reps || 1)
-    const currentVolume = existing[exercise.name as keyof typeof COLORS] || 0
-    existing[exercise.name as keyof typeof COLORS] = currentVolume + volume
-
-    dateMap.set(dateKey, existing)
-  })
-
-  return Array.from(dateMap.values())
+  return { data, users: userNames }
 }
 
 export default function Dashboard() {
   const { data: exercises, isLoading, error } = useAllExercisesForAnalytics()
+  const [selectedExercise, setSelectedExercise] = useState<ExerciseName>(EXERCISE_NAMES[0])
 
-  const frequencyData = useMemo(
-    () => (exercises ? getExerciseFrequencyData(exercises) : []),
-    [exercises]
+  const { data: chartData, users } = useMemo(
+    () => (exercises ? buildChartData(exercises, selectedExercise) : { data: [], users: [] }),
+    [exercises, selectedExercise]
   )
 
-  const weightProgressionData = useMemo(
-    () => (exercises ? getWeightProgressionData(exercises) : []),
-    [exercises]
-  )
-
-  const volumeData = useMemo(() => (exercises ? getVolumeData(exercises) : []), [exercises])
+  const handleToggle = (_: React.MouseEvent, value: ExerciseName | null) => {
+    if (value) {
+      setSelectedExercise(value)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -138,8 +103,6 @@ export default function Dashboard() {
     )
   }
 
-  const totalExercises = exercises?.length || 0
-
   return (
     <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>
@@ -147,163 +110,64 @@ export default function Dashboard() {
           Analytics Dashboard
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-          Exercise analytics across all users ({totalExercises} total exercises logged)
+          Max weight progression per user
         </Typography>
 
-        <Grid container spacing={3} sx={{ mt: 2 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card sx={{ height: 400 }}>
-              <CardContent sx={{ height: '100%' }}>
-                <Typography variant="h6" gutterBottom>
-                  Exercise Frequency
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  How often each exercise is performed
-                </Typography>
-                {frequencyData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="80%">
-                    <BarChart data={frequencyData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="count" name="Times Performed" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '80%',
-                    }}
-                  >
-                    <Typography color="text.secondary">No data available</Typography>
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
+        <Paper sx={{ p: 3 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 2,
+              mb: 3,
+            }}
+          >
+            <Typography variant="h6">{selectedExercise} — Max Weight (kg)</Typography>
+            <ToggleButtonGroup
+              value={selectedExercise}
+              exclusive
+              onChange={handleToggle}
+              size="small"
+            >
+              {EXERCISE_NAMES.map((name) => (
+                <ToggleButton key={name} value={name} sx={{ textTransform: 'none' }}>
+                  {name}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Box>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card sx={{ height: 400 }}>
-              <CardContent sx={{ height: '100%' }}>
-                <Typography variant="h6" gutterBottom>
-                  Weight Progression
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Maximum weight lifted over time (kg)
-                </Typography>
-                {weightProgressionData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="80%">
-                    <LineChart data={weightProgressionData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="Deadlift"
-                        stroke={COLORS.Deadlift}
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        connectNulls
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="Power Clean"
-                        stroke={COLORS['Power Clean']}
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        connectNulls
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="Bench Press"
-                        stroke={COLORS['Bench Press']}
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        connectNulls
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '80%',
-                    }}
-                  >
-                    <Typography color="text.secondary">No data available</Typography>
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid size={{ xs: 12 }}>
-            <Card sx={{ height: 400 }}>
-              <CardContent sx={{ height: '100%' }}>
-                <Typography variant="h6" gutterBottom>
-                  Volume Trends
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Total volume (sets x reps) over time
-                </Typography>
-                {volumeData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="80%">
-                    <AreaChart data={volumeData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Area
-                        type="monotone"
-                        dataKey="Deadlift"
-                        stackId="1"
-                        stroke={COLORS.Deadlift}
-                        fill={COLORS.Deadlift}
-                        fillOpacity={0.6}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="Power Clean"
-                        stackId="1"
-                        stroke={COLORS['Power Clean']}
-                        fill={COLORS['Power Clean']}
-                        fillOpacity={0.6}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="Bench Press"
-                        stackId="1"
-                        stroke={COLORS['Bench Press']}
-                        fill={COLORS['Bench Press']}
-                        fillOpacity={0.6}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '80%',
-                    }}
-                  >
-                    <Typography color="text.secondary">No data available</Typography>
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+          {chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis unit=" kg" />
+                <Tooltip />
+                <Legend />
+                {users.map((user, i) => (
+                  <Line
+                    key={user}
+                    type="monotone"
+                    dataKey={user}
+                    stroke={USER_COLORS[i % USER_COLORS.length]}
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    connectNulls
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}
+            >
+              <Typography color="text.secondary">No data available</Typography>
+            </Box>
+          )}
+        </Paper>
       </Box>
     </Container>
   )
