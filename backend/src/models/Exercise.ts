@@ -12,6 +12,8 @@ export const EXERCISE_NAMES = [
   'Overhead Squat',
   'Power Snatch',
   'Back Lunges',
+  'Push Up',
+  'Pull Up',
 ] as const;
 export type ExerciseName = typeof EXERCISE_NAMES[number];
 
@@ -35,12 +37,13 @@ export interface IExercise extends Document {
 const WeightEntrySchema = new Schema<IWeightEntry>({
   weight: {
     type: Number,
-    required: true,
     min: [1, 'Weight must be at least 1 kg'],
     max: [300, 'Weight cannot exceed 300 kg'],
   },
   reps: {
     type: Number,
+    min: [1, 'Reps must be at least 1'],
+    max: [500, 'Reps cannot exceed 500'],
   },
   sets: {
     type: Number,
