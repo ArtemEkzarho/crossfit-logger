@@ -4,12 +4,13 @@ import {
   deleteExercise,
   deleteWeightEntry,
   getAllExercisesForAnalytics,
+  getExerciseAnalytics,
   getExerciseByName,
   getExercises,
   logWeight,
   updateWeightEntry,
 } from '../api/exercises'
-import type { LogWeightData, UpdateWeightEntryData } from '../types/exercise'
+import type { ExerciseName, LogWeightData, UpdateWeightEntryData } from '../types/exercise'
 
 export function useExercises() {
   const { getToken } = useAuth()
@@ -34,6 +35,20 @@ export function useAllExercisesForAnalytics() {
       if (!token) throw new Error('Not authenticated')
       return getAllExercisesForAnalytics(token)
     },
+  })
+}
+
+export function useExerciseAnalytics(name: ExerciseName) {
+  const { getToken } = useAuth()
+
+  return useQuery({
+    queryKey: ['exercises', 'analytics', name],
+    queryFn: async () => {
+      const token = await getToken()
+      if (!token) throw new Error('Not authenticated')
+      return getExerciseAnalytics(name, token)
+    },
+    staleTime: 60 * 1000, // 1 minute — no refetch when switching back to a cached exercise
   })
 }
 

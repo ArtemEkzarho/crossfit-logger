@@ -74,7 +74,7 @@ export default function EditEntryDialog({
             required={isReps}
             fullWidth
             slotProps={{ htmlInput: { min: 1, max: 500 } }}
-            helperText={isReps ? '1 – 500 reps' : undefined}
+            helperText="1 – 500"
           />
           <TextField
             label="Sets"
@@ -82,6 +82,8 @@ export default function EditEntryDialog({
             value={editEntry?.sets ?? ''}
             onChange={(e) => onChange('sets', e.target.value)}
             fullWidth
+            slotProps={{ htmlInput: { min: 1, max: 10 } }}
+            helperText="1 – 10"
           />
           <TextField
             label="Notes"
@@ -90,6 +92,8 @@ export default function EditEntryDialog({
             multiline
             rows={3}
             fullWidth
+            slotProps={{ htmlInput: { maxLength: 300 } }}
+            helperText={`${(editEntry?.notes ?? '').length} / 300`}
           />
           <TextField
             label="Date"

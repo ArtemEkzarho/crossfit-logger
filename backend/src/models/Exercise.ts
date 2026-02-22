@@ -47,9 +47,12 @@ const WeightEntrySchema = new Schema<IWeightEntry>({
   },
   sets: {
     type: Number,
+    min: [1, 'Sets must be at least 1'],
+    max: [10, 'Sets cannot exceed 10'],
   },
   notes: {
     type: String,
+    maxlength: [300, 'Notes cannot exceed 300 characters'],
   },
   date: {
     type: Date,

@@ -30,6 +30,10 @@ export async function getAllExercisesForAnalytics(token: string): Promise<Exerci
   return fetchWithAuth(`${API_URL}/api/exercises/analytics/all`, {}, token)
 }
 
+export async function getExerciseAnalytics(name: string, token: string): Promise<Exercise[]> {
+  return fetchWithAuth(`${API_URL}/api/exercises/analytics/${encodeURIComponent(name)}`, {}, token)
+}
+
 export async function getExerciseByName(name: string, token: string): Promise<Exercise> {
   return fetchWithAuth(`${API_URL}/api/exercises/${encodeURIComponent(name)}`, {}, token)
 }
