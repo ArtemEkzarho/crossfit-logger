@@ -46,6 +46,8 @@ export default function EditEntryDialog({
             onChange={(e) => onChange('weight', e.target.value)}
             required
             fullWidth
+            slotProps={{ htmlInput: { min: 1, max: 300 } }}
+            helperText="1 – 300 kg"
           />
           <TextField
             label="Reps"
@@ -84,7 +86,12 @@ export default function EditEntryDialog({
         <Button
           onClick={onSubmit}
           variant="contained"
-          disabled={!editEntry?.weight || isSaving}
+          disabled={
+            !editEntry?.weight ||
+            Number(editEntry.weight) < 1 ||
+            Number(editEntry.weight) > 300 ||
+            isSaving
+          }
         >
           {isSaving ? 'Saving...' : 'Update'}
         </Button>
