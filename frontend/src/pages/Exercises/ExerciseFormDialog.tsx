@@ -110,7 +110,7 @@ export default function ExerciseFormDialog({
             required={isReps}
             fullWidth
             slotProps={{ htmlInput: { min: 1, max: 500 } }}
-            helperText={isReps ? '1 – 500 reps' : undefined}
+            helperText="1 – 500"
           />
           <TextField
             label="Sets"
@@ -118,6 +118,8 @@ export default function ExerciseFormDialog({
             value={formData.sets}
             onChange={onFormChange('sets')}
             fullWidth
+            slotProps={{ htmlInput: { min: 1, max: 10 } }}
+            helperText="1 – 10"
           />
           <TextField
             label="Notes"
@@ -126,6 +128,8 @@ export default function ExerciseFormDialog({
             multiline
             rows={3}
             fullWidth
+            slotProps={{ htmlInput: { maxLength: 300 } }}
+            helperText={`${formData.notes.length} / 300`}
           />
           <TextField
             label="Date"
