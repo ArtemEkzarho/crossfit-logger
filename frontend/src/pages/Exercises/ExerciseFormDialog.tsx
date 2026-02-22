@@ -82,6 +82,8 @@ export default function ExerciseFormDialog({
             onChange={onFormChange('weight')}
             required
             fullWidth
+            slotProps={{ htmlInput: { min: 1, max: 300 } }}
+            helperText="1 – 300 kg"
           />
           <TextField
             label="Reps"
@@ -120,7 +122,13 @@ export default function ExerciseFormDialog({
         <Button
           onClick={onSubmit}
           variant="contained"
-          disabled={!formData.name || !formData.weight || isSaving}
+          disabled={
+            !formData.name ||
+            !formData.weight ||
+            Number(formData.weight) < 1 ||
+            Number(formData.weight) > 300 ||
+            isSaving
+          }
         >
           {isSaving ? 'Saving...' : 'Log'}
         </Button>
