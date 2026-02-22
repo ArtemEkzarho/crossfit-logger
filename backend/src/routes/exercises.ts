@@ -29,7 +29,7 @@ router.get('/analytics/all', async (req, res: Response) => {
       userIds.map(async (id) => {
         try {
           const user = await clerkClient.users.getUser(id);
-          const name = [user.firstName, user.lastName].filter(Boolean).join(' ') || 'Unknown';
+          const name = user.username || [user.firstName, user.lastName].filter(Boolean).join(' ') || 'Unknown';
           userNameMap.set(user.id, name);
         } catch {
           // user not found or Clerk error — skip
