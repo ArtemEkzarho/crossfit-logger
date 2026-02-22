@@ -36,6 +36,8 @@ const WeightEntrySchema = new Schema<IWeightEntry>({
   weight: {
     type: Number,
     required: true,
+    min: [1, 'Weight must be at least 1 kg'],
+    max: [300, 'Weight cannot exceed 300 kg'],
   },
   reps: {
     type: Number,
