@@ -1,4 +1,4 @@
-import type { Exercise, CreateExerciseData, UpdateExerciseData } from '../types/exercise'
+import type { Exercise, LogWeightData, UpdateWeightEntryData } from '../types/exercise'
 
 // In development, use empty string to go through Vite proxy
 // In production, use VITE_API_URL
@@ -30,11 +30,11 @@ export async function getAllExercisesForAnalytics(token: string): Promise<Exerci
   return fetchWithAuth(`${API_URL}/api/exercises/analytics/all`, {}, token)
 }
 
-export async function getExercise(id: string, token: string): Promise<Exercise> {
-  return fetchWithAuth(`${API_URL}/api/exercises/${id}`, {}, token)
+export async function getExerciseByName(name: string, token: string): Promise<Exercise> {
+  return fetchWithAuth(`${API_URL}/api/exercises/${encodeURIComponent(name)}`, {}, token)
 }
 
-export async function createExercise(data: CreateExerciseData, token: string): Promise<Exercise> {
+export async function logWeight(data: LogWeightData, token: string): Promise<Exercise> {
   return fetchWithAuth(
     `${API_URL}/api/exercises`,
     {
@@ -45,13 +45,14 @@ export async function createExercise(data: CreateExerciseData, token: string): P
   )
 }
 
-export async function updateExercise(
-  id: string,
-  data: UpdateExerciseData,
+export async function updateWeightEntry(
+  name: string,
+  entryId: string,
+  data: UpdateWeightEntryData,
   token: string
 ): Promise<Exercise> {
   return fetchWithAuth(
-    `${API_URL}/api/exercises/${id}`,
+    `${API_URL}/api/exercises/${encodeURIComponent(name)}/entries/${entryId}`,
     {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -60,12 +61,22 @@ export async function updateExercise(
   )
 }
 
-export async function deleteExercise(id: string, token: string): Promise<{ message: string }> {
+export async function deleteWeightEntry(
+  name: string,
+  entryId: string,
+  token: string
+): Promise<Exercise> {
   return fetchWithAuth(
-    `${API_URL}/api/exercises/${id}`,
-    {
-      method: 'DELETE',
-    },
+    `${API_URL}/api/exercises/${encodeURIComponent(name)}/entries/${entryId}`,
+    { method: 'DELETE' },
+    token
+  )
+}
+
+export async function deleteExercise(name: string, token: string): Promise<{ message: string }> {
+  return fetchWithAuth(
+    `${API_URL}/api/exercises/${encodeURIComponent(name)}`,
+    { method: 'DELETE' },
     token
   )
 }

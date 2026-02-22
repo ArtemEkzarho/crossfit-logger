@@ -2,31 +2,39 @@
 export const EXERCISE_NAMES = ['Deadlift', 'Power Clean', 'Bench Press'] as const
 export type ExerciseName = (typeof EXERCISE_NAMES)[number]
 
-export interface Exercise {
+export interface WeightEntry {
   _id: string
-  userId: string
-  userName?: string
-  name: ExerciseName
-  weight?: number
+  weight: number
   reps?: number
   sets?: number
   notes?: string
   date: string
+}
+
+export interface Exercise {
+  _id: string
+  userId: string
+  name: ExerciseName
+  weightHistory: WeightEntry[]
   createdAt: string
   updatedAt: string
 }
 
-export interface CreateExerciseData {
+export function getMaxWeight(exercise: Exercise): number | undefined {
+  if (!exercise.weightHistory?.length) return undefined
+  return Math.max(...exercise.weightHistory.map((e) => e.weight))
+}
+
+export interface LogWeightData {
   name: ExerciseName
-  weight?: number
+  weight: number
   reps?: number
   sets?: number
   notes?: string
-  date?: string
+  date: string
 }
 
-export interface UpdateExerciseData {
-  name?: ExerciseName
+export interface UpdateWeightEntryData {
   weight?: number
   reps?: number
   sets?: number

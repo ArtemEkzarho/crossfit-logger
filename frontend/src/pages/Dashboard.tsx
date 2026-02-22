@@ -42,28 +42,30 @@ function formatDate(dateStr: string): string {
 }
 
 function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
-  const filtered = exercises
-    .filter((e) => e.name === selectedExercise && e.weight != null)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  const filtered = exercises.filter((e) => e.name === selectedExercise)
 
   const userNames = [...new Set(filtered.map((e) => e.userName || 'Unknown'))]
 
   const dateMap = new Map<string, Record<string, string | number>>()
 
   filtered.forEach((exercise) => {
-    const dateKey = exercise.date.split('T')[0]
-    const existing = dateMap.get(dateKey) || { date: formatDate(exercise.date) }
-    const name = exercise.userName || 'Unknown'
+    const userName = exercise.userName || 'Unknown'
+    ;(exercise.weightHistory ?? []).forEach((entry) => {
+      const dateKey = entry.date.split('T')[0]
+      const existing = dateMap.get(dateKey) || { date: formatDate(entry.date) }
 
-    const current = existing[name] as number | undefined
-    if (!current || exercise.weight! > current) {
-      existing[name] = exercise.weight!
-    }
+      const current = existing[userName] as number | undefined
+      if (!current || entry.weight > current) {
+        existing[userName] = entry.weight
+      }
 
-    dateMap.set(dateKey, existing)
+      dateMap.set(dateKey, existing)
+    })
   })
 
-  const data = Array.from(dateMap.values())
+  const data = Array.from(dateMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, value]) => value)
 
   return { data, users: userNames }
 }

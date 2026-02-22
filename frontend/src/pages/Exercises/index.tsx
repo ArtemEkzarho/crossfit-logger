@@ -2,27 +2,18 @@ import { Add } from '@mui/icons-material'
 import { Alert, Box, CircularProgress, Container, Fab, Snackbar, Typography } from '@mui/material'
 import type { SelectChangeEvent } from '@mui/material'
 import { useState } from 'react'
-import {
-  useCreateExercise,
-  useDeleteExercise,
-  useExercises,
-  useUpdateExercise,
-} from '../../hooks/useExercises'
-import type { CreateExerciseData, Exercise, ExerciseName } from '../../types/exercise'
-import DeleteConfirmDialog from './DeleteConfirmDialog'
+import { useNavigate } from 'react-router-dom'
+import { useExercises, useLogWeight } from '../../hooks/useExercises'
+import type { ExerciseName } from '../../types/exercise'
 import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
 import ExercisesTable from './ExercisesTable'
 
 export default function Exercises() {
+  const navigate = useNavigate()
   const { data: exercises, isLoading, error } = useExercises()
-  const createExercise = useCreateExercise()
-  const updateExercise = useUpdateExercise()
-  const deleteExerciseMutation = useDeleteExercise()
+  const logWeight = useLogWeight()
 
   const [formOpen, setFormOpen] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
-  const [exerciseToDelete, setExerciseToDelete] = useState<Exercise | null>(null)
   const [formData, setFormData] = useState<ExerciseFormData>(emptyForm)
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
@@ -31,38 +22,13 @@ export default function Exercises() {
   })
 
   const handleOpenCreate = () => {
-    setEditingExercise(null)
     setFormData(emptyForm)
-    setFormOpen(true)
-  }
-
-  const handleOpenEdit = (exercise: Exercise) => {
-    setEditingExercise(exercise)
-    setFormData({
-      name: exercise.name,
-      weight: exercise.weight?.toString() || '',
-      reps: exercise.reps?.toString() || '',
-      sets: exercise.sets?.toString() || '',
-      notes: exercise.notes || '',
-      date: new Date(exercise.date).toISOString().split('T')[0],
-    })
     setFormOpen(true)
   }
 
   const handleCloseForm = () => {
     setFormOpen(false)
-    setEditingExercise(null)
     setFormData(emptyForm)
-  }
-
-  const handleOpenDelete = (exercise: Exercise) => {
-    setExerciseToDelete(exercise)
-    setDeleteDialogOpen(true)
-  }
-
-  const handleCloseDelete = () => {
-    setDeleteDialogOpen(false)
-    setExerciseToDelete(null)
   }
 
   const handleFormChange = (field: keyof ExerciseFormData) => (
@@ -76,42 +42,19 @@ export default function Exercises() {
   }
 
   const handleSubmit = async () => {
-    if (!formData.name) return
-
-    const data: CreateExerciseData = {
-      name: formData.name,
-      weight: formData.weight ? Number(formData.weight) : undefined,
-      reps: formData.reps ? Number(formData.reps) : undefined,
-      sets: formData.sets ? Number(formData.sets) : undefined,
-      notes: formData.notes || undefined,
-      date: formData.date,
-    }
+    if (!formData.name || !formData.weight) return
 
     try {
-      if (editingExercise) {
-        await updateExercise.mutateAsync({ id: editingExercise._id, data })
-        setSnackbar({ open: true, message: 'Exercise updated successfully', severity: 'success' })
-      } else {
-        await createExercise.mutateAsync(data)
-        setSnackbar({ open: true, message: 'Exercise created successfully', severity: 'success' })
-      }
-      handleCloseForm()
-    } catch (err) {
-      setSnackbar({
-        open: true,
-        message: err instanceof Error ? err.message : 'An error occurred',
-        severity: 'error',
+      await logWeight.mutateAsync({
+        name: formData.name,
+        weight: Number(formData.weight),
+        reps: formData.reps ? Number(formData.reps) : undefined,
+        sets: formData.sets ? Number(formData.sets) : undefined,
+        notes: formData.notes || undefined,
+        date: formData.date,
       })
-    }
-  }
-
-  const handleDelete = async () => {
-    if (!exerciseToDelete) return
-
-    try {
-      await deleteExerciseMutation.mutateAsync(exerciseToDelete._id)
-      setSnackbar({ open: true, message: 'Exercise deleted successfully', severity: 'success' })
-      handleCloseDelete()
+      setSnackbar({ open: true, message: 'Weight logged successfully', severity: 'success' })
+      handleCloseForm()
     } catch (err) {
       setSnackbar({
         open: true,
@@ -155,8 +98,7 @@ export default function Exercises() {
 
         <ExercisesTable
           exercises={exercises ?? []}
-          onEdit={handleOpenEdit}
-          onDelete={handleOpenDelete}
+          onNavigate={(name) => navigate(`/exercises/${encodeURIComponent(name)}`)}
           onCreate={handleOpenCreate}
         />
 
@@ -171,21 +113,12 @@ export default function Exercises() {
 
         <ExerciseFormDialog
           open={formOpen}
-          isEditing={!!editingExercise}
-          isSaving={createExercise.isPending || updateExercise.isPending}
+          isSaving={logWeight.isPending}
           formData={formData}
           onFormChange={handleFormChange}
           onSelectChange={handleSelectChange}
           onSubmit={handleSubmit}
           onClose={handleCloseForm}
-        />
-
-        <DeleteConfirmDialog
-          open={deleteDialogOpen}
-          exercise={exerciseToDelete}
-          isDeleting={deleteExerciseMutation.isPending}
-          onConfirm={handleDelete}
-          onClose={handleCloseDelete}
         />
 
         <Snackbar

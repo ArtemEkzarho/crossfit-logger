@@ -1,12 +1,11 @@
-import { Add, Delete, Edit } from '@mui/icons-material'
+import { Add, ChevronRight } from '@mui/icons-material'
 import {
   Box,
   Button,
   Card,
-  CardActions,
+  CardActionArea,
   CardContent,
   Chip,
-  IconButton,
   Paper,
   Stack,
   Table,
@@ -20,11 +19,11 @@ import {
   useTheme,
 } from '@mui/material'
 import type { Exercise } from '../../types/exercise'
+import { getMaxWeight } from '../../types/exercise'
 
 interface ExercisesTableProps {
   exercises: Exercise[]
-  onEdit: (exercise: Exercise) => void
-  onDelete: (exercise: Exercise) => void
+  onNavigate: (name: string) => void
   onCreate: () => void
 }
 
@@ -32,7 +31,7 @@ function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString()
 }
 
-export default function ExercisesTable({ exercises, onEdit, onDelete, onCreate }: ExercisesTableProps) {
+export default function ExercisesTable({ exercises, onNavigate, onCreate }: ExercisesTableProps) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -43,10 +42,10 @@ export default function ExercisesTable({ exercises, onEdit, onDelete, onCreate }
           No exercises yet
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          Start tracking your workouts by adding your first exercise.
+          Start tracking your workouts by logging your first weight.
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={onCreate}>
-          Add Exercise
+          Log Weight
         </Button>
       </Paper>
     )
@@ -55,42 +54,41 @@ export default function ExercisesTable({ exercises, onEdit, onDelete, onCreate }
   if (isMobile) {
     return (
       <Stack spacing={2} sx={{ mt: 3 }}>
-        {exercises.map((exercise) => (
-          <Card key={exercise._id}>
-            <CardContent sx={{ pb: 1 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                <Typography variant="h6">{exercise.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {formatDate(exercise.date)}
-                </Typography>
-              </Box>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
-                {exercise.weight != null && (
-                  <Chip label={`${exercise.weight} kg`} size="small" variant="outlined" />
-                )}
-                {exercise.reps != null && (
-                  <Chip label={`${exercise.reps} reps`} size="small" variant="outlined" />
-                )}
-                {exercise.sets != null && (
-                  <Chip label={`${exercise.sets} sets`} size="small" variant="outlined" />
-                )}
-              </Box>
-              {exercise.notes && (
-                <Typography variant="body2" color="text.secondary">
-                  {exercise.notes}
-                </Typography>
-              )}
-            </CardContent>
-            <CardActions sx={{ justifyContent: 'flex-end', pt: 0 }}>
-              <IconButton color="primary" onClick={() => onEdit(exercise)} size="small">
-                <Edit />
-              </IconButton>
-              <IconButton color="error" onClick={() => onDelete(exercise)} size="small">
-                <Delete />
-              </IconButton>
-            </CardActions>
-          </Card>
-        ))}
+        {exercises.map((exercise) => {
+          const maxWeight = getMaxWeight(exercise)
+          const lastEntry = exercise.weightHistory?.at(-1)
+          return (
+            <Card key={exercise._id}>
+              <CardActionArea onClick={() => onNavigate(exercise.name)}>
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box>
+                      <Typography variant="h6">{exercise.name}</Typography>
+                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 0.5 }}>
+                        {maxWeight != null && (
+                          <Chip label={`${maxWeight} kg`} size="small" color="primary" />
+                        )}
+                        {lastEntry && (
+                          <Chip
+                            label={formatDate(lastEntry.date)}
+                            size="small"
+                            variant="outlined"
+                          />
+                        )}
+                        <Chip
+                          label={`${exercise.weightHistory.length} entries`}
+                          size="small"
+                          variant="outlined"
+                        />
+                      </Box>
+                    </Box>
+                    <ChevronRight color="action" />
+                  </Box>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          )
+        })}
       </Stack>
     )
   }
@@ -100,38 +98,44 @@ export default function ExercisesTable({ exercises, onEdit, onDelete, onCreate }
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Weight (kg)</TableCell>
-            <TableCell align="right">Reps</TableCell>
-            <TableCell align="right">Sets</TableCell>
-            <TableCell>Notes</TableCell>
-            <TableCell>Date</TableCell>
-            <TableCell align="center">Actions</TableCell>
+            <TableCell>Exercise</TableCell>
+            <TableCell align="right">Max Weight (kg)</TableCell>
+            <TableCell align="right">Entries</TableCell>
+            <TableCell>Last Logged</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
-          {exercises.map((exercise) => (
-            <TableRow key={exercise._id} hover>
-              <TableCell component="th" scope="row">
-                {exercise.name}
-              </TableCell>
-              <TableCell align="right">{exercise.weight ?? '-'}</TableCell>
-              <TableCell align="right">{exercise.reps ?? '-'}</TableCell>
-              <TableCell align="right">{exercise.sets ?? '-'}</TableCell>
-              <TableCell sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {exercise.notes || '-'}
-              </TableCell>
-              <TableCell>{formatDate(exercise.date)}</TableCell>
-              <TableCell align="center">
-                <IconButton color="primary" onClick={() => onEdit(exercise)} size="small">
-                  <Edit />
-                </IconButton>
-                <IconButton color="error" onClick={() => onDelete(exercise)} size="small">
-                  <Delete />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+          {exercises.map((exercise) => {
+            const maxWeight = getMaxWeight(exercise)
+            const lastEntry = exercise.weightHistory?.at(-1)
+            return (
+              <TableRow
+                key={exercise._id}
+                hover
+                onClick={() => onNavigate(exercise.name)}
+                sx={{ cursor: 'pointer' }}
+              >
+                <TableCell component="th" scope="row">
+                  <Typography fontWeight={500}>{exercise.name}</Typography>
+                </TableCell>
+                <TableCell align="right">
+                  {maxWeight != null ? (
+                    <Typography fontWeight={700} color="primary">
+                      {maxWeight}
+                    </Typography>
+                  ) : (
+                    '—'
+                  )}
+                </TableCell>
+                <TableCell align="right">{exercise.weightHistory.length}</TableCell>
+                <TableCell>{lastEntry ? formatDate(lastEntry.date) : '—'}</TableCell>
+                <TableCell align="right">
+                  <ChevronRight color="action" />
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
     </TableContainer>
