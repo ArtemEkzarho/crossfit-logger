@@ -1,5 +1,16 @@
 // Allowed exercise names - keep in sync with backend
-export const EXERCISE_NAMES = ['Deadlift', 'Power Clean', 'Bench Press'] as const
+export const EXERCISE_NAMES = [
+  'Deadlift',
+  'Power Clean',
+  'Bench Press',
+  'Front Squat',
+  'Back Squat',
+  'Push Press',
+  'Strict Press',
+  'Overhead Squat',
+  'Power Snatch',
+  'Back Lunges',
+] as const
 export type ExerciseName = (typeof EXERCISE_NAMES)[number]
 
 export interface WeightEntry {

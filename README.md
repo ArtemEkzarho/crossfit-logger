@@ -54,8 +54,13 @@ crossfit-logger/
 │   │   │   ├── Home.tsx            # Landing page
 │   │   │   ├── Dashboard.tsx       # Analytics charts
 │   │   │   └── Exercises/
-│   │   │       ├── index.tsx       # Exercise list page
-│   │   │       ├── ExerciseDetail.tsx      # Per-exercise detail & history
+│   │   │       ├── index.tsx               # Exercise list page
+│   │   │       ├── ExerciseDetail.tsx      # Detail page orchestrator (state + handlers)
+│   │   │       ├── ExerciseDetail/
+│   │   │       │   ├── ExerciseDetailHeader.tsx  # Back button + name + PR display
+│   │   │       │   ├── WeightHistory.tsx          # Responsive table/cards
+│   │   │       │   ├── EditEntryDialog.tsx        # Edit weight entry dialog
+│   │   │       │   └── DeleteEntryDialog.tsx      # Delete confirm dialog
 │   │   │       ├── ExercisesTable.tsx      # Clickable exercise list
 │   │   │       ├── ExerciseFormDialog.tsx  # Log weight dialog
 │   │   │       └── DeleteConfirmDialog.tsx
