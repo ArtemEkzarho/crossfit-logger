@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useExercises, useLogWeight } from '../../hooks/useExercises'
 import type { ExerciseName } from '../../types/exercise'
+import { getExerciseMetric } from '../../types/exercise'
 import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
 import ExercisesTable from './ExercisesTable'
 
@@ -42,12 +43,15 @@ export default function Exercises() {
   }
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.weight) return
+    if (!formData.name) return
+    const metric = getExerciseMetric(formData.name)
+    if (metric === 'weight' && !formData.weight) return
+    if (metric === 'reps' && !formData.reps) return
 
     try {
       await logWeight.mutateAsync({
         name: formData.name,
-        weight: Number(formData.weight),
+        weight: metric === 'weight' ? Number(formData.weight) : undefined,
         reps: formData.reps ? Number(formData.reps) : undefined,
         sets: formData.sets ? Number(formData.sets) : undefined,
         notes: formData.notes || undefined,

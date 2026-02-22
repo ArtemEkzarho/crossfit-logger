@@ -13,7 +13,7 @@ import {
   TextField,
 } from '@mui/material'
 import type { ExerciseName } from '../../types/exercise'
-import { EXERCISE_NAMES } from '../../types/exercise'
+import { EXERCISE_NAMES, getExerciseMetric } from '../../types/exercise'
 
 export interface ExerciseFormData {
   name: ExerciseName | ''
@@ -54,9 +54,24 @@ export default function ExerciseFormDialog({
   onSubmit,
   onClose,
 }: ExerciseFormDialogProps) {
+  const metric = formData.name ? getExerciseMetric(formData.name) : 'weight'
+  const isReps = metric === 'reps'
+
+  const isSubmitDisabled = isReps
+    ? !formData.name ||
+      !formData.reps ||
+      Number(formData.reps) < 1 ||
+      Number(formData.reps) > 500 ||
+      isSaving
+    : !formData.name ||
+      !formData.weight ||
+      Number(formData.weight) < 1 ||
+      Number(formData.weight) > 300 ||
+      isSaving
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Log Weight</DialogTitle>
+      <DialogTitle>Log Entry</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
           <FormControl fullWidth required>
@@ -75,22 +90,27 @@ export default function ExerciseFormDialog({
               ))}
             </Select>
           </FormControl>
-          <TextField
-            label="Weight (kg)"
-            type="number"
-            value={formData.weight}
-            onChange={onFormChange('weight')}
-            required
-            fullWidth
-            slotProps={{ htmlInput: { min: 1, max: 300 } }}
-            helperText="1 – 300 kg"
-          />
+          {!isReps && (
+            <TextField
+              label="Weight (kg)"
+              type="number"
+              value={formData.weight}
+              onChange={onFormChange('weight')}
+              required
+              fullWidth
+              slotProps={{ htmlInput: { min: 1, max: 300 } }}
+              helperText="1 – 300 kg"
+            />
+          )}
           <TextField
             label="Reps"
             type="number"
             value={formData.reps}
             onChange={onFormChange('reps')}
+            required={isReps}
             fullWidth
+            slotProps={{ htmlInput: { min: 1, max: 500 } }}
+            helperText={isReps ? '1 – 500 reps' : undefined}
           />
           <TextField
             label="Sets"
@@ -119,17 +139,7 @@ export default function ExerciseFormDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button
-          onClick={onSubmit}
-          variant="contained"
-          disabled={
-            !formData.name ||
-            !formData.weight ||
-            Number(formData.weight) < 1 ||
-            Number(formData.weight) > 300 ||
-            isSaving
-          }
-        >
+        <Button onClick={onSubmit} variant="contained" disabled={isSubmitDisabled}>
           {isSaving ? 'Saving...' : 'Log'}
         </Button>
       </DialogActions>

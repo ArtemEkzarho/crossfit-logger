@@ -7,6 +7,7 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material'
+import type { ExerciseMetric } from '../../../types/exercise'
 
 export interface EditEntryState {
   entryId: string
@@ -21,6 +22,7 @@ interface EditEntryDialogProps {
   open: boolean
   editEntry: EditEntryState | null
   isSaving: boolean
+  metric: ExerciseMetric
   onChange: (field: keyof Omit<EditEntryState, 'entryId'>, value: string) => void
   onSubmit: () => void
   onClose: () => void
@@ -30,31 +32,49 @@ export default function EditEntryDialog({
   open,
   editEntry,
   isSaving,
+  metric,
   onChange,
   onSubmit,
   onClose,
 }: EditEntryDialogProps) {
+  const isReps = metric === 'reps'
+
+  const isSubmitDisabled = isReps
+    ? !editEntry?.reps ||
+      Number(editEntry.reps) < 1 ||
+      Number(editEntry.reps) > 500 ||
+      isSaving
+    : !editEntry?.weight ||
+      Number(editEntry.weight) < 1 ||
+      Number(editEntry.weight) > 300 ||
+      isSaving
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Edit Entry</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
-          <TextField
-            label="Weight (kg)"
-            type="number"
-            value={editEntry?.weight ?? ''}
-            onChange={(e) => onChange('weight', e.target.value)}
-            required
-            fullWidth
-            slotProps={{ htmlInput: { min: 1, max: 300 } }}
-            helperText="1 – 300 kg"
-          />
+          {!isReps && (
+            <TextField
+              label="Weight (kg)"
+              type="number"
+              value={editEntry?.weight ?? ''}
+              onChange={(e) => onChange('weight', e.target.value)}
+              required
+              fullWidth
+              slotProps={{ htmlInput: { min: 1, max: 300 } }}
+              helperText="1 – 300 kg"
+            />
+          )}
           <TextField
             label="Reps"
             type="number"
             value={editEntry?.reps ?? ''}
             onChange={(e) => onChange('reps', e.target.value)}
+            required={isReps}
             fullWidth
+            slotProps={{ htmlInput: { min: 1, max: 500 } }}
+            helperText={isReps ? '1 – 500 reps' : undefined}
           />
           <TextField
             label="Sets"
@@ -83,16 +103,7 @@ export default function EditEntryDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button
-          onClick={onSubmit}
-          variant="contained"
-          disabled={
-            !editEntry?.weight ||
-            Number(editEntry.weight) < 1 ||
-            Number(editEntry.weight) > 300 ||
-            isSaving
-          }
-        >
+        <Button onClick={onSubmit} variant="contained" disabled={isSubmitDisabled}>
           {isSaving ? 'Saving...' : 'Update'}
         </Button>
       </DialogActions>

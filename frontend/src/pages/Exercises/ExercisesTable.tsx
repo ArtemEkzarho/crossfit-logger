@@ -19,7 +19,7 @@ import {
   useTheme,
 } from '@mui/material'
 import type { Exercise } from '../../types/exercise'
-import { getMaxWeight } from '../../types/exercise'
+import { getExerciseMetric, getMaxValue } from '../../types/exercise'
 
 interface ExercisesTableProps {
   exercises: Exercise[]
@@ -42,10 +42,10 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
           No exercises yet
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          Start tracking your workouts by logging your first weight.
+          Start tracking your workouts by logging your first entry.
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={onCreate}>
-          Log Weight
+          Log Entry
         </Button>
       </Paper>
     )
@@ -55,7 +55,8 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
     return (
       <Stack spacing={2} sx={{ mt: 3 }}>
         {exercises.map((exercise) => {
-          const maxWeight = getMaxWeight(exercise)
+          const maxValue = getMaxValue(exercise)
+          const metric = getExerciseMetric(exercise.name)
           const lastEntry = exercise.weightHistory?.[exercise.weightHistory.length - 1]
           return (
             <Card key={exercise._id}>
@@ -65,8 +66,12 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
                     <Box>
                       <Typography variant="h6">{exercise.name}</Typography>
                       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 0.5 }}>
-                        {maxWeight != null && (
-                          <Chip label={`${maxWeight} kg`} size="small" color="primary" />
+                        {maxValue != null && (
+                          <Chip
+                            label={`${maxValue} ${metric === 'reps' ? 'reps' : 'kg'}`}
+                            size="small"
+                            color="primary"
+                          />
                         )}
                         {lastEntry && (
                           <Chip
@@ -99,7 +104,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
         <TableHead>
           <TableRow>
             <TableCell>Exercise</TableCell>
-            <TableCell align="right">Max Weight (kg)</TableCell>
+            <TableCell align="right">Best</TableCell>
             <TableCell align="right">Entries</TableCell>
             <TableCell>Last Logged</TableCell>
             <TableCell />
@@ -107,7 +112,8 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
         </TableHead>
         <TableBody>
           {exercises.map((exercise) => {
-            const maxWeight = getMaxWeight(exercise)
+            const maxValue = getMaxValue(exercise)
+            const metric = getExerciseMetric(exercise.name)
             const lastEntry = exercise.weightHistory?.[exercise.weightHistory.length - 1]
             return (
               <TableRow
@@ -120,9 +126,9 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
                   <Typography fontWeight={500}>{exercise.name}</Typography>
                 </TableCell>
                 <TableCell align="right">
-                  {maxWeight != null ? (
+                  {maxValue != null ? (
                     <Typography fontWeight={700} color="primary">
-                      {maxWeight}
+                      {maxValue} {metric === 'reps' ? 'reps' : 'kg'}
                     </Typography>
                   ) : (
                     '—'

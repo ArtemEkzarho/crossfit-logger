@@ -21,7 +21,7 @@ import {
 } from 'recharts'
 import { useAllExercisesForAnalytics } from '../hooks/useExercises'
 import type { Exercise, ExerciseName } from '../types/exercise'
-import { EXERCISE_NAMES } from '../types/exercise'
+import { EXERCISE_NAMES, getExerciseMetric } from '../types/exercise'
 
 const USER_COLORS = [
   '#8884d8',
@@ -42,6 +42,7 @@ function formatDate(dateStr: string): string {
 }
 
 function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
+  const metric = getExerciseMetric(selectedExercise)
   const filtered = exercises.filter((e) => e.name === selectedExercise)
 
   const userNames = [...new Set(filtered.map((e) => e.userName || 'Unknown'))]
@@ -51,12 +52,15 @@ function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
   filtered.forEach((exercise) => {
     const userName = exercise.userName || 'Unknown'
     ;(exercise.weightHistory ?? []).forEach((entry) => {
+      const entryValue = metric === 'reps' ? entry.reps : entry.weight
+      if (entryValue == null) return
+
       const dateKey = entry.date.split('T')[0]
       const existing = dateMap.get(dateKey) || { date: formatDate(entry.date) }
 
       const current = existing[userName] as number | undefined
-      if (!current || entry.weight > current) {
-        existing[userName] = entry.weight
+      if (!current || entryValue > current) {
+        existing[userName] = entryValue
       }
 
       dateMap.set(dateKey, existing)
@@ -67,15 +71,15 @@ function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([, value]) => value)
 
-  return { data, users: userNames }
+  return { data, users: userNames, metric }
 }
 
 export default function Dashboard() {
   const { data: exercises, isLoading, error } = useAllExercisesForAnalytics()
   const [selectedExercise, setSelectedExercise] = useState<ExerciseName>(EXERCISE_NAMES[0])
 
-  const { data: chartData, users } = useMemo(
-    () => (exercises ? buildChartData(exercises, selectedExercise) : { data: [], users: [] }),
+  const { data: chartData, users, metric } = useMemo(
+    () => (exercises ? buildChartData(exercises, selectedExercise) : { data: [], users: [], metric: 'weight' as const }),
     [exercises, selectedExercise]
   )
 
@@ -126,7 +130,9 @@ export default function Dashboard() {
               mb: 3,
             }}
           >
-            <Typography variant="h6">{selectedExercise} — Max Weight (kg)</Typography>
+            <Typography variant="h6">
+              {selectedExercise} — {metric === 'reps' ? 'Max Reps' : 'Max Weight (kg)'}
+            </Typography>
             <ToggleButtonGroup
               value={selectedExercise}
               exclusive
@@ -146,7 +152,7 @@ export default function Dashboard() {
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
-                <YAxis unit=" kg" />
+                <YAxis unit={metric === 'reps' ? ' reps' : ' kg'} />
                 <Tooltip />
                 <Legend />
                 {users.map((user, i) => (

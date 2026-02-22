@@ -9,7 +9,7 @@ import {
   useUpdateWeightEntry,
 } from '../../hooks/useExercises'
 import type { ExerciseName, UpdateWeightEntryData, WeightEntry } from '../../types/exercise'
-import { getMaxWeight } from '../../types/exercise'
+import { getExerciseMetric, getMaxValue } from '../../types/exercise'
 import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
 import DeleteEntryDialog from './ExerciseDetail/DeleteEntryDialog'
 import EditEntryDialog, { type EditEntryState } from './ExerciseDetail/EditEntryDialog'
@@ -50,17 +50,21 @@ export default function ExerciseDetail() {
     setLogFormData((prev) => ({ ...prev, name: e.target.value as ExerciseName }))
 
   const handleLogSubmit = async () => {
-    if (!logFormData.name || !logFormData.weight) return
+    if (!logFormData.name) return
+    const metric = getExerciseMetric(logFormData.name)
+    if (metric === 'weight' && !logFormData.weight) return
+    if (metric === 'reps' && !logFormData.reps) return
+
     try {
       await logWeight.mutateAsync({
         name: logFormData.name,
-        weight: Number(logFormData.weight),
+        weight: metric === 'weight' ? Number(logFormData.weight) : undefined,
         reps: logFormData.reps ? Number(logFormData.reps) : undefined,
         sets: logFormData.sets ? Number(logFormData.sets) : undefined,
         notes: logFormData.notes || undefined,
         date: logFormData.date,
       })
-      showSnackbar('Weight logged', 'success')
+      showSnackbar('Entry logged', 'success')
       setLogFormOpen(false)
       setLogFormData({ ...emptyForm, name: decodedName as ExerciseName })
     } catch (err) {
@@ -71,7 +75,7 @@ export default function ExerciseDetail() {
   const handleOpenEdit = (entry: WeightEntry) => {
     setEditEntry({
       entryId: entry._id,
-      weight: entry.weight.toString(),
+      weight: entry.weight?.toString() ?? '',
       reps: entry.reps?.toString() ?? '',
       sets: entry.sets?.toString() ?? '',
       notes: entry.notes ?? '',
@@ -86,8 +90,9 @@ export default function ExerciseDetail() {
 
   const handleEditSubmit = async () => {
     if (!editEntry) return
+    const metric = getExerciseMetric(decodedName as ExerciseName)
     const data: UpdateWeightEntryData = {
-      weight: Number(editEntry.weight),
+      weight: metric === 'weight' && editEntry.weight ? Number(editEntry.weight) : undefined,
       reps: editEntry.reps ? Number(editEntry.reps) : undefined,
       sets: editEntry.sets ? Number(editEntry.sets) : undefined,
       notes: editEntry.notes || undefined,
@@ -129,7 +134,8 @@ export default function ExerciseDetail() {
         <Box sx={{ my: 4 }}>
           <ExerciseDetailHeader
             name={decodedName}
-            maxWeight={undefined}
+            maxValue={undefined}
+            metric="weight"
             onBack={() => navigate('/exercises')}
             onLogWeight={() => {}}
           />
@@ -141,7 +147,8 @@ export default function ExerciseDetail() {
     )
   }
 
-  const maxWeight = getMaxWeight(exercise)
+  const metric = getExerciseMetric(exercise.name)
+  const maxValue = getMaxValue(exercise)
   const sortedHistory = [...(exercise.weightHistory ?? [])].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   )
@@ -151,7 +158,8 @@ export default function ExerciseDetail() {
       <Box sx={{ my: 4 }}>
         <ExerciseDetailHeader
           name={exercise.name}
-          maxWeight={maxWeight}
+          maxValue={maxValue}
+          metric={metric}
           onBack={() => navigate('/exercises')}
           onLogWeight={() => {
             setLogFormData({ ...emptyForm, name: decodedName as ExerciseName })
@@ -162,12 +170,13 @@ export default function ExerciseDetail() {
         <Divider sx={{ mb: 3 }} />
 
         <Typography variant="h5" gutterBottom>
-          Weight History
+          History
         </Typography>
 
         <WeightHistory
           entries={sortedHistory}
-          maxWeight={maxWeight}
+          maxValue={maxValue}
+          metric={metric}
           onEdit={handleOpenEdit}
           onDelete={setDeleteEntryId}
         />
@@ -188,6 +197,7 @@ export default function ExerciseDetail() {
         open={!!editEntry}
         editEntry={editEntry}
         isSaving={updateEntry.isPending}
+        metric={metric}
         onChange={handleEditChange}
         onSubmit={handleEditSubmit}
         onClose={() => setEditEntry(null)}

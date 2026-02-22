@@ -1,16 +1,19 @@
 import { ArrowBack } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
+import type { ExerciseMetric } from '../../../types/exercise'
 
 interface ExerciseDetailHeaderProps {
   name: string
-  maxWeight: number | undefined
+  maxValue: number | undefined
+  metric: ExerciseMetric
   onBack: () => void
   onLogWeight: () => void
 }
 
 export default function ExerciseDetailHeader({
   name,
-  maxWeight,
+  maxValue,
+  metric,
   onBack,
   onLogWeight,
 }: ExerciseDetailHeaderProps) {
@@ -34,13 +37,13 @@ export default function ExerciseDetailHeader({
           <Typography variant="h3" component="h1">
             {name}
           </Typography>
-          {maxWeight != null && (
+          {maxValue != null && (
             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 1 }}>
               <Typography variant="h2" color="primary" fontWeight={700}>
-                {maxWeight}
+                {maxValue}
               </Typography>
               <Typography variant="h5" color="text.secondary">
-                kg
+                {metric === 'reps' ? 'reps' : 'kg'}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                 personal best
@@ -49,7 +52,7 @@ export default function ExerciseDetailHeader({
           )}
         </Box>
         <Button variant="contained" onClick={onLogWeight}>
-          Log Weight
+          Log Entry
         </Button>
       </Box>
     </>
