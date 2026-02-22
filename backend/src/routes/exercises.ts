@@ -48,6 +48,37 @@ router.get('/analytics/all', async (req, res: Response) => {
   }
 });
 
+// GET all exercises for a specific exercise name from all users (for analytics)
+router.get('/analytics/:name', async (req, res: Response) => {
+  try {
+    const name = decodeURIComponent(req.params.name);
+    const exercises = await Exercise.find({ name }).sort({ updatedAt: -1 });
+
+    const userIds = [...new Set(exercises.map((e) => e.userId))];
+    const userNameMap = new Map<string, string>();
+    await Promise.all(
+      userIds.map(async (id) => {
+        try {
+          const user = await clerkClient.users.getUser(id);
+          const displayName = user.username || [user.firstName, user.lastName].filter(Boolean).join(' ') || 'Unknown';
+          userNameMap.set(user.id, displayName);
+        } catch {
+          // user not found or Clerk error — skip
+        }
+      })
+    );
+
+    const enriched = exercises.map((e) => ({
+      ...e.toObject(),
+      userName: userNameMap.get(e.userId) || 'Unknown',
+    }));
+
+    res.json(enriched);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
 // GET single exercise by name
 router.get('/:name', async (req, res: Response) => {
   try {

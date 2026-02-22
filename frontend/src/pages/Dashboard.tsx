@@ -19,7 +19,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { useAllExercisesForAnalytics } from '../hooks/useExercises'
+import { useExerciseAnalytics } from '../hooks/useExercises'
 import type { Exercise, ExerciseName } from '../types/exercise'
 import { EXERCISE_NAMES, getExerciseMetric } from '../types/exercise'
 
@@ -43,13 +43,11 @@ function formatDate(dateStr: string): string {
 
 function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
   const metric = getExerciseMetric(selectedExercise)
-  const filtered = exercises.filter((e) => e.name === selectedExercise)
-
-  const userNames = [...new Set(filtered.map((e) => e.userName || 'Unknown'))]
+  const userNames = [...new Set(exercises.map((e) => e.userName || 'Unknown'))]
 
   const dateMap = new Map<string, Record<string, string | number>>()
 
-  filtered.forEach((exercise) => {
+  exercises.forEach((exercise) => {
     const userName = exercise.userName || 'Unknown'
     ;(exercise.weightHistory ?? []).forEach((entry) => {
       const entryValue = metric === 'reps' ? entry.reps : entry.weight
@@ -75,8 +73,8 @@ function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
 }
 
 export default function Dashboard() {
-  const { data: exercises, isLoading, error } = useAllExercisesForAnalytics()
   const [selectedExercise, setSelectedExercise] = useState<ExerciseName>(EXERCISE_NAMES[0])
+  const { data: exercises, isLoading, error } = useExerciseAnalytics(selectedExercise)
 
   const { data: chartData, users, metric } = useMemo(
     () => (exercises ? buildChartData(exercises, selectedExercise) : { data: [], users: [], metric: 'weight' as const }),
@@ -87,16 +85,6 @@ export default function Dashboard() {
     if (value) {
       setSelectedExercise(value)
     }
-  }
-
-  if (isLoading) {
-    return (
-      <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-          <CircularProgress />
-        </Box>
-      </Container>
-    )
   }
 
   if (error) {
@@ -115,11 +103,11 @@ export default function Dashboard() {
         <Typography variant="h3" component="h1" gutterBottom>
           Analytics Dashboard
         </Typography>
-        <Typography variant="body1" color="text.secondary" paragraph>
-          Max weight progression per user
+        <Typography variant="body1" color="text.secondary">
+          Max progression per user
         </Typography>
 
-        <Paper sx={{ p: 3 }}>
+        <Paper sx={{ p: 3, mt: 3 }}>
           <Box
             sx={{
               display: 'flex',
@@ -147,7 +135,11 @@ export default function Dashboard() {
             </ToggleButtonGroup>
           </Box>
 
-          {chartData.length > 0 ? (
+          {isLoading ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
+              <CircularProgress />
+            </Box>
+          ) : chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
