@@ -56,7 +56,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
       <Stack spacing={2} sx={{ mt: 3 }}>
         {exercises.map((exercise) => {
           const maxWeight = getMaxWeight(exercise)
-          const lastEntry = exercise.weightHistory?.at(-1)
+          const lastEntry = exercise.weightHistory?.[exercise.weightHistory.length - 1]
           return (
             <Card key={exercise._id}>
               <CardActionArea onClick={() => onNavigate(exercise.name)}>
@@ -108,7 +108,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
         <TableBody>
           {exercises.map((exercise) => {
             const maxWeight = getMaxWeight(exercise)
-            const lastEntry = exercise.weightHistory?.at(-1)
+            const lastEntry = exercise.weightHistory?.[exercise.weightHistory.length - 1]
             return (
               <TableRow
                 key={exercise._id}

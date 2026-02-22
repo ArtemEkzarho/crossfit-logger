@@ -14,6 +14,7 @@ export interface WeightEntry {
 export interface Exercise {
   _id: string
   userId: string
+  userName?: string
   name: ExerciseName
   weightHistory: WeightEntry[]
   createdAt: string
