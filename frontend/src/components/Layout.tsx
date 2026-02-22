@@ -38,6 +38,9 @@ export default function Layout() {
     <>
       <AppBar position="static">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
+            <MenuIcon />
+          </IconButton>
           <Box
             sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
             onClick={() => handleNavigate('/')}
@@ -47,24 +50,42 @@ export default function Layout() {
               Crossfit Logger
             </Typography>
           </Box>
-          <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
-            <MenuIcon />
-          </IconButton>
         </Toolbar>
       </AppBar>
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <Box sx={{ width: 250 }} role="presentation">
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              pr: 1,
+            }}
+          >
             <SignedIn>
               <Box
-                sx={{ display: 'flex', alignItems: 'center', gap: 1.5, overflow: 'hidden', cursor: 'pointer' }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  gap: 1.5,
+                  py: 2,
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                }}
                 onClick={(e) => {
-                  const btn = e.currentTarget.querySelector<HTMLButtonElement>('.cl-userButtonTrigger')
+                  const btn =
+                    e.currentTarget.querySelector<HTMLButtonElement>('.cl-userButtonTrigger')
                   btn?.click()
                 }}
               >
-                <UserButton />
-                <Typography variant="subtitle1" noWrap>{user?.fullName ?? user?.firstName}</Typography>
+                <Box sx={{ display: 'flex', pl: 2 }} onClick={(e) => e.stopPropagation()}>
+                  <UserButton />
+                </Box>
+                <Typography variant="subtitle1" noWrap>
+                  {user?.fullName ?? user?.firstName}
+                </Typography>
               </Box>
             </SignedIn>
             <IconButton onClick={() => setDrawerOpen(false)}>

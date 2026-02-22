@@ -1,14 +1,15 @@
 import { useAuth } from '@clerk/clerk-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  createExercise,
   deleteExercise,
+  deleteWeightEntry,
   getAllExercisesForAnalytics,
-  getExercise,
+  getExerciseByName,
   getExercises,
-  updateExercise,
+  logWeight,
+  updateWeightEntry,
 } from '../api/exercises'
-import type { CreateExerciseData, UpdateExerciseData } from '../types/exercise'
+import type { LogWeightData, UpdateWeightEntryData } from '../types/exercise'
 
 export function useExercises() {
   const { getToken } = useAuth()
@@ -36,48 +37,75 @@ export function useAllExercisesForAnalytics() {
   })
 }
 
-export function useExercise(id: string) {
+export function useExercise(name: string) {
   const { getToken } = useAuth()
 
   return useQuery({
-    queryKey: ['exercises', id],
+    queryKey: ['exercises', name],
     queryFn: async () => {
       const token = await getToken()
       if (!token) throw new Error('Not authenticated')
-      return getExercise(id, token)
+      return getExerciseByName(name, token)
     },
-    enabled: !!id,
+    enabled: !!name,
   })
 }
 
-export function useCreateExercise() {
+export function useLogWeight() {
   const { getToken } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: CreateExerciseData) => {
+    mutationFn: async (data: LogWeightData) => {
       const token = await getToken()
       if (!token) throw new Error('Not authenticated')
-      return createExercise(data, token)
+      return logWeight(data, token)
     },
-    onSuccess: () => {
+    onSuccess: (exercise) => {
       queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.setQueryData(['exercises', exercise.name], exercise)
     },
   })
 }
 
-export function useUpdateExercise() {
+export function useUpdateWeightEntry() {
   const { getToken } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateExerciseData }) => {
+    mutationFn: async ({
+      name,
+      entryId,
+      data,
+    }: {
+      name: string
+      entryId: string
+      data: UpdateWeightEntryData
+    }) => {
       const token = await getToken()
       if (!token) throw new Error('Not authenticated')
-      return updateExercise(id, data, token)
+      return updateWeightEntry(name, entryId, data, token)
     },
-    onSuccess: () => {
+    onSuccess: (exercise) => {
       queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.setQueryData(['exercises', exercise.name], exercise)
+    },
+  })
+}
+
+export function useDeleteWeightEntry() {
+  const { getToken } = useAuth()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ name, entryId }: { name: string; entryId: string }) => {
+      const token = await getToken()
+      if (!token) throw new Error('Not authenticated')
+      return deleteWeightEntry(name, entryId, token)
+    },
+    onSuccess: (exercise) => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] })
+      queryClient.setQueryData(['exercises', exercise.name], exercise)
     },
   })
 }
@@ -87,10 +115,10 @@ export function useDeleteExercise() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (name: string) => {
       const token = await getToken()
       if (!token) throw new Error('Not authenticated')
-      return deleteExercise(id, token)
+      return deleteExercise(name, token)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['exercises'] })

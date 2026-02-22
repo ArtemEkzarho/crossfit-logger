@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Exercises from './pages/Exercises'
+import ExerciseDetail from './pages/Exercises/ExerciseDetail'
 
 function App() {
   return (
@@ -24,6 +25,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Exercises />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercises/:name"
+            element={
+              <ProtectedRoute>
+                <ExerciseDetail />
               </ProtectedRoute>
             }
           />

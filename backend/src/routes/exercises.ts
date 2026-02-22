@@ -11,9 +11,7 @@ router.use(requireAuth());
 router.get('/', async (req, res: Response) => {
   try {
     const { userId } = getAuth(req);
-    const exercises = await Exercise.find({ userId })
-      .sort({ date: -1 });
-
+    const exercises = await Exercise.find({ userId }).sort({ updatedAt: -1 });
     res.json(exercises);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
@@ -23,7 +21,7 @@ router.get('/', async (req, res: Response) => {
 // GET all exercises from all users for analytics
 router.get('/analytics/all', async (req, res: Response) => {
   try {
-    const exercises = await Exercise.find({}).sort({ date: -1 });
+    const exercises = await Exercise.find({}).sort({ updatedAt: -1 });
 
     const userIds = [...new Set(exercises.map((e) => e.userId))];
     const userNameMap = new Map<string, string>();
@@ -50,74 +48,109 @@ router.get('/analytics/all', async (req, res: Response) => {
   }
 });
 
-// GET single exercise
-router.get('/:id', async (req, res: Response) => {
+// GET single exercise by name
+router.get('/:name', async (req, res: Response) => {
   try {
     const { userId } = getAuth(req);
-    const exercise = await Exercise.findOne({ 
-      _id: req.params.id, 
-      userId 
-    });
-    
+    const exercise = await Exercise.findOne({ userId, name: req.params.name });
+
     if (!exercise) {
       return res.status(404).json({ error: 'Exercise not found' });
     }
-    
+
     res.json(exercise);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
 });
 
-// POST create new exercise
+// POST log weight — upsert by userId+name, push entry to weightHistory
 router.post('/', async (req, res: Response) => {
   try {
     const { userId } = getAuth(req);
-    const exercise = new Exercise({
-      ...req.body,
-      userId
-    });
-    
-    await exercise.save();
+    const { name, weight, reps, sets, notes, date } = req.body;
+
+    const entry = {
+      weight,
+      reps,
+      sets,
+      notes,
+      date: date ? new Date(date) : new Date(),
+    };
+
+    const exercise = await Exercise.findOneAndUpdate(
+      { userId, name },
+      { $push: { weightHistory: entry } },
+      { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
+    );
+
     res.status(201).json(exercise);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
 });
 
-// PUT update exercise
-router.put('/:id', async (req, res: Response) => {
+// PUT update a single weight entry
+router.put('/:name/entries/:entryId', async (req, res: Response) => {
   try {
     const { userId } = getAuth(req);
+    const { weight, reps, sets, notes, date } = req.body;
+
+    const update: Record<string, unknown> = {};
+    if (weight !== undefined) update['weightHistory.$.weight'] = weight;
+    if (reps !== undefined) update['weightHistory.$.reps'] = reps;
+    if (sets !== undefined) update['weightHistory.$.sets'] = sets;
+    if (notes !== undefined) update['weightHistory.$.notes'] = notes;
+    if (date !== undefined) update['weightHistory.$.date'] = new Date(date);
+
     const exercise = await Exercise.findOneAndUpdate(
-      { _id: req.params.id, userId },
-      req.body,
-      { new: true, runValidators: true }
+      { userId, name: req.params.name, 'weightHistory._id': req.params.entryId },
+      { $set: update },
+      { new: true }
     );
-    
+
     if (!exercise) {
-      return res.status(404).json({ error: 'Exercise not found' });
+      return res.status(404).json({ error: 'Entry not found' });
     }
-    
+
     res.json(exercise);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
 });
 
-// DELETE exercise
-router.delete('/:id', async (req, res: Response) => {
+// DELETE a single weight entry
+router.delete('/:name/entries/:entryId', async (req, res: Response) => {
   try {
     const { userId } = getAuth(req);
-    const exercise = await Exercise.findOneAndDelete({ 
-      _id: req.params.id, 
-      userId 
-    });
-    
+
+    const exercise = await Exercise.findOneAndUpdate(
+      { userId, name: req.params.name },
+      { $pull: { weightHistory: { _id: req.params.entryId } } },
+      { new: true }
+    );
+
     if (!exercise) {
       return res.status(404).json({ error: 'Exercise not found' });
     }
-    
+
+    res.json(exercise);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+// DELETE entire exercise record
+router.delete('/:name', async (req, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+
+    const exercise = await Exercise.findOneAndDelete({ userId, name: req.params.name });
+
+    if (!exercise) {
+      return res.status(404).json({ error: 'Exercise not found' });
+    }
+
     res.json({ message: 'Exercise deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });

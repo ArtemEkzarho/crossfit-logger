@@ -35,9 +35,9 @@ export const emptyForm: ExerciseFormData = {
 
 interface ExerciseFormDialogProps {
   open: boolean
-  isEditing: boolean
   isSaving: boolean
   formData: ExerciseFormData
+  lockedName?: ExerciseName
   onFormChange: (field: keyof ExerciseFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void
   onSelectChange: (e: SelectChangeEvent) => void
   onSubmit: () => void
@@ -46,9 +46,9 @@ interface ExerciseFormDialogProps {
 
 export default function ExerciseFormDialog({
   open,
-  isEditing,
   isSaving,
   formData,
+  lockedName,
   onFormChange,
   onSelectChange,
   onSubmit,
@@ -56,7 +56,7 @@ export default function ExerciseFormDialog({
 }: ExerciseFormDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{isEditing ? 'Edit Exercise' : 'Add Exercise'}</DialogTitle>
+      <DialogTitle>Log Weight</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
           <FormControl fullWidth required>
@@ -66,6 +66,7 @@ export default function ExerciseFormDialog({
               value={formData.name}
               label="Exercise Name"
               onChange={onSelectChange}
+              disabled={!!lockedName}
             >
               {EXERCISE_NAMES.map((name) => (
                 <MenuItem key={name} value={name}>
@@ -79,6 +80,7 @@ export default function ExerciseFormDialog({
             type="number"
             value={formData.weight}
             onChange={onFormChange('weight')}
+            required
             fullWidth
           />
           <TextField
@@ -115,8 +117,12 @@ export default function ExerciseFormDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={onSubmit} variant="contained" disabled={!formData.name || isSaving}>
-          {isSaving ? 'Saving...' : isEditing ? 'Update' : 'Create'}
+        <Button
+          onClick={onSubmit}
+          variant="contained"
+          disabled={!formData.name || !formData.weight || isSaving}
+        >
+          {isSaving ? 'Saving...' : 'Log'}
         </Button>
       </DialogActions>
     </Dialog>

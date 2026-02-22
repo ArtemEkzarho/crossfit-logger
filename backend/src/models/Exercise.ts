@@ -1,54 +1,72 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 // Allowed exercise names - extend this list as needed
 export const EXERCISE_NAMES = ['Deadlift', 'Power Clean', 'Bench Press'] as const;
 export type ExerciseName = typeof EXERCISE_NAMES[number];
 
-export interface IExercise extends Document {
-  userId: string;
-  name: ExerciseName;
-  weight?: number;
+export interface IWeightEntry {
+  _id: Types.ObjectId;
+  weight: number;
   reps?: number;
   sets?: number;
   notes?: string;
   date: Date;
+}
+
+export interface IExercise extends Document {
+  userId: string;
+  name: ExerciseName;
+  weightHistory: IWeightEntry[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-const ExerciseSchema = new Schema<IExercise>({
-  userId: {
-    type: String,
-    required: true,
-    index: true
-  },
-  name: {
-    type: String,
-    required: true,
-    enum: {
-      values: EXERCISE_NAMES,
-      message: '{VALUE} is not a valid exercise. Allowed exercises: ' + EXERCISE_NAMES.join(', ')
-    }
-  },
+const WeightEntrySchema = new Schema<IWeightEntry>({
   weight: {
-    type: Number
+    type: Number,
+    required: true,
   },
   reps: {
-    type: Number
+    type: Number,
   },
   sets: {
-    type: Number
+    type: Number,
   },
   notes: {
-    type: String
+    type: String,
   },
   date: {
     type: Date,
     required: true,
-    default: Date.now
-  }
-}, {
-  timestamps: true
+    default: Date.now,
+  },
 });
+
+const ExerciseSchema = new Schema<IExercise>(
+  {
+    userId: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      enum: {
+        values: EXERCISE_NAMES,
+        message: '{VALUE} is not a valid exercise. Allowed exercises: ' + EXERCISE_NAMES.join(', '),
+      },
+    },
+    weightHistory: {
+      type: [WeightEntrySchema],
+      default: [],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// One exercise per type per user
+ExerciseSchema.index({ userId: 1, name: 1 }, { unique: true });
 
 export default mongoose.model<IExercise>('Exercise', ExerciseSchema);

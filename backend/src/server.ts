@@ -5,7 +5,7 @@ import { clerkMiddleware } from '@clerk/express';
 import dotenv from 'dotenv';
 import exerciseRoutes from './routes/exercises'; 
 
-dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 const app: Express = express();
 
