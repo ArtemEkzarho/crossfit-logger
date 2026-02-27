@@ -15,6 +15,7 @@ A full-stack web application for tracking CrossFit workouts, monitoring progress
 - Vite
 - Material-UI (MUI)
 - TanStack React Query
+- Jotai (atomic state for Timer)
 - Recharts for analytics
 - Clerk for authentication
 
@@ -25,13 +26,35 @@ A full-stack web application for tracking CrossFit workouts, monitoring progress
 
 ## Features
 
-- **Exercise Tracking** — Log weight entries (with reps, sets, notes) per exercise type; one document per exercise type per user with full weight history
-- **Supported Exercises** — Deadlift, Power Clean, Bench Press
-- **Personal Best** — Max weight across all entries is highlighted as the personal record (PR)
-- **Exercise Detail Page** — Per-exercise view showing the PR prominently and the full weight history sorted by date; supports editing and deleting individual entries
-- **Analytics Dashboard** — Max weight progression over time per user, filterable by exercise type
+- **Exercise Tracking** — Log entries (weight + reps/sets/notes) per exercise; one document per exercise type per user with full history
+- **Two Metric Types** — Weight exercises track max kg (PR); bodyweight exercises (Push Up, Pull Up) track max reps
+- **Personal Best** — PR highlighted in the exercise detail view; a `%` button shows 50–90% breakdowns for warm-up planning
+- **Exercise Detail Page** — Per-exercise view with PR display, full history sorted by date, inline edit and delete
+- **Analytics Dashboard** — Max progression per user over time; lazy-loads per selected exercise (one request per tab, cached for 1 min)
+- **Crossfit Timer** — Four modes with audio alerts and a 5-second pre-start countdown (see below)
 - **User Authentication** — Secure sign in/up via Clerk
-- **User-scoped Data** — Each user sees only their own exercises
+- **User-scoped Data** — Each user sees only their own exercises; analytics shows all users
+
+### Supported Exercises
+
+| Exercise | Metric |
+|----------|--------|
+| Deadlift, Power Clean, Bench Press, Front Squat, Back Squat | Weight (kg) |
+| Push Press, Strict Press, Overhead Squat, Power Snatch, Back Lunges | Weight (kg) |
+| Push Up, Pull Up | Reps |
+
+### Crossfit Timer
+
+Public route (`/timer`) — no login required.
+
+| Mode | Description |
+|------|-------------|
+| **AMRAP** | Countdown from a set duration; do as many rounds as possible |
+| **EMOM** | Every Minute On the Minute; beeps at each new minute |
+| **For Time** | Count-up stopwatch; stop manually when finished |
+| **Tabata** | Configurable work/rest intervals × N rounds |
+
+Audio cues via Web Audio API: beep at 3/2/1 seconds remaining, double beep on interval transitions, triple beep on completion. A 5-second "Get ready!" countdown plays before every mode starts.
 
 ## Project Structure
 
@@ -52,25 +75,35 @@ crossfit-logger/
 │   │   ├── App.tsx                 # Route definitions
 │   │   ├── pages/
 │   │   │   ├── Home.tsx            # Landing page
-│   │   │   ├── Dashboard.tsx       # Analytics charts
+│   │   │   ├── Dashboard.tsx       # Per-exercise analytics charts (lazy-loaded)
+│   │   │   ├── Timer/              # Crossfit timer (Jotai atoms)
+│   │   │   │   ├── index.tsx           # Orchestrator (effects only)
+│   │   │   │   ├── timerAtoms.ts       # All state, derived values, and actions
+│   │   │   │   ├── timerAudio.ts       # Web Audio API beep utilities
+│   │   │   │   ├── timerHelpers.ts     # fmt() helper
+│   │   │   │   ├── TimerDisplay.tsx    # Clock display + sub-labels
+│   │   │   │   ├── TimerConfig.tsx     # Mode-specific config fields
+│   │   │   │   └── TimerControls.tsx   # Start/Pause/Reset buttons
 │   │   │   └── Exercises/
 │   │   │       ├── index.tsx               # Exercise list page
-│   │   │       ├── ExerciseDetail.tsx      # Detail page orchestrator (state + handlers)
+│   │   │       ├── ExerciseDetail.tsx      # Detail page orchestrator
 │   │   │       ├── ExerciseDetail/
-│   │   │       │   ├── ExerciseDetailHeader.tsx  # Back button + name + PR display
+│   │   │       │   ├── ExerciseDetailHeader.tsx  # PR display + % calculator dialog
 │   │   │       │   ├── WeightHistory.tsx          # Responsive table/cards
-│   │   │       │   ├── EditEntryDialog.tsx        # Edit weight entry dialog
+│   │   │       │   ├── EditEntryDialog.tsx        # Edit entry dialog
 │   │   │       │   └── DeleteEntryDialog.tsx      # Delete confirm dialog
 │   │   │       ├── ExercisesTable.tsx      # Clickable exercise list
-│   │   │       ├── ExerciseFormDialog.tsx  # Log weight dialog
+│   │   │       ├── ExerciseFormDialog.tsx  # Log entry dialog
 │   │   │       └── DeleteConfirmDialog.tsx
 │   │   ├── components/
+│   │   │   ├── Layout.tsx          # AppBar + drawer navigation
+│   │   │   └── ProtectedRoute.tsx  # Clerk auth guard
 │   │   ├── hooks/
 │   │   │   └── useExercises.ts     # React Query hooks
 │   │   ├── api/
 │   │   │   └── exercises.ts        # API client functions
 │   │   └── types/
-│   │       └── exercise.ts         # Shared types + getMaxWeight helper
+│   │       └── exercise.ts         # Shared types, EXERCISE_DEFINITIONS, getMaxValue
 │   └── package.json
 │
 └── pnpm-workspace.yaml
@@ -78,7 +111,7 @@ crossfit-logger/
 
 ## Data Model
 
-Each exercise is stored as a single document per type per user with an embedded `weightHistory` array:
+Each exercise is stored as one document per type per user with an embedded `weightHistory` array. `weight` is optional for reps-based exercises.
 
 ```json
 {
@@ -91,7 +124,17 @@ Each exercise is stored as a single document per type per user with an embedded 
 }
 ```
 
-The personal best (max weight) is derived client-side from `weightHistory`.
+```json
+{
+  "userId": "...",
+  "name": "Push Up",
+  "weightHistory": [
+    { "_id": "...", "reps": 30, "sets": 3, "date": "2026-02-22" }
+  ]
+}
+```
+
+The personal best is derived client-side via `getMaxValue()` — uses `weight` for kg exercises and `reps` for bodyweight exercises.
 
 ## Getting Started
 
@@ -140,12 +183,13 @@ The frontend runs on `http://localhost:5173` and the backend on `http://localhos
 |--------|----------|-------------|
 | GET | `/health` | Health check |
 | GET | `/api/exercises` | Get all exercises for the authenticated user |
-| GET | `/api/exercises/:name` | Get a single exercise by name |
-| POST | `/api/exercises` | Log weight — upserts by exercise name, appends to weightHistory |
+| GET | `/api/exercises/analytics/all` | Get all users' exercises (all types) for analytics |
+| GET | `/api/exercises/analytics/:name` | Get all users' entries for a specific exercise |
+| GET | `/api/exercises/:name` | Get a single exercise by name for the authenticated user |
+| POST | `/api/exercises` | Log entry — upserts by name, appends to weightHistory |
 | PUT | `/api/exercises/:name/entries/:entryId` | Update a single weight entry |
 | DELETE | `/api/exercises/:name/entries/:entryId` | Delete a single weight entry |
 | DELETE | `/api/exercises/:name` | Delete an entire exercise record |
-| GET | `/api/exercises/analytics/all` | Get all users' exercises for analytics |
 
 ## Deployment
 

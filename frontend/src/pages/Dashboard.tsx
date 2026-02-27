@@ -1,11 +1,10 @@
 import {
   Alert,
   Box,
+  Chip,
   CircularProgress,
   Container,
   Paper,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import { useMemo, useState } from 'react'
@@ -76,16 +75,17 @@ export default function Dashboard() {
   const [selectedExercise, setSelectedExercise] = useState<ExerciseName>(EXERCISE_NAMES[0])
   const { data: exercises, isLoading, error } = useExerciseAnalytics(selectedExercise)
 
-  const { data: chartData, users, metric } = useMemo(
-    () => (exercises ? buildChartData(exercises, selectedExercise) : { data: [], users: [], metric: 'weight' as const }),
+  const {
+    data: chartData,
+    users,
+    metric,
+  } = useMemo(
+    () =>
+      exercises
+        ? buildChartData(exercises, selectedExercise)
+        : { data: [], users: [], metric: 'weight' as const },
     [exercises, selectedExercise]
   )
-
-  const handleToggle = (_: React.MouseEvent, value: ExerciseName | null) => {
-    if (value) {
-      setSelectedExercise(value)
-    }
-  }
 
   if (error) {
     return (
@@ -108,35 +108,28 @@ export default function Dashboard() {
         </Typography>
 
         <Paper sx={{ p: 3, mt: 3 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 2,
-              mb: 3,
-            }}
-          >
-            <Typography variant="h6">
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ mb: 1.5 }}>
               {selectedExercise} — {metric === 'reps' ? 'Max Reps' : 'Max Weight (kg)'}
             </Typography>
-            <ToggleButtonGroup
-              value={selectedExercise}
-              exclusive
-              onChange={handleToggle}
-              size="small"
-            >
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {EXERCISE_NAMES.map((name) => (
-                <ToggleButton key={name} value={name} sx={{ textTransform: 'none' }}>
-                  {name}
-                </ToggleButton>
+                <Chip
+                  key={name}
+                  label={name}
+                  clickable
+                  color={selectedExercise === name ? 'primary' : 'default'}
+                  variant={selectedExercise === name ? 'filled' : 'outlined'}
+                  onClick={() => setSelectedExercise(name)}
+                />
               ))}
-            </ToggleButtonGroup>
+            </Box>
           </Box>
 
           {isLoading ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}
+            >
               <CircularProgress />
             </Box>
           ) : chartData.length > 0 ? (

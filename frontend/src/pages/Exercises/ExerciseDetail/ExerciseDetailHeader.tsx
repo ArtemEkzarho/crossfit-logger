@@ -2,17 +2,19 @@ import { ArrowBack, Percent } from '@mui/icons-material'
 import {
   Box,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
   List,
   ListItem,
-  Popover,
   Tooltip,
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
 import type { ExerciseMetric } from '../../../types/exercise'
 
-const PERCENTAGES = [50, 60, 70, 80, 90]
+const PERCENTAGES = [50, 55, 60, 65, 70, 75, 80, 85, 90]
 
 interface ExerciseDetailHeaderProps {
   name: string
@@ -29,7 +31,7 @@ export default function ExerciseDetailHeader({
   onBack,
   onLogWeight,
 }: ExerciseDetailHeaderProps) {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [open, setOpen] = useState(false)
   const unit = metric === 'reps' ? 'reps' : 'kg'
 
   return (
@@ -71,7 +73,7 @@ export default function ExerciseDetailHeader({
           <Tooltip title={maxValue == null ? 'No PR yet' : '% of PR'}>
             <span>
               <IconButton
-                onClick={(e) => setAnchorEl(e.currentTarget)}
+                onClick={() => setOpen(true)}
                 disabled={maxValue == null}
                 color="primary"
                 sx={{ border: 1, borderColor: 'divider' }}
@@ -86,32 +88,28 @@ export default function ExerciseDetailHeader({
         </Box>
       </Box>
 
-      <Popover
-        open={!!anchorEl}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Box sx={{ p: 2, minWidth: 190 }}>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            fontWeight={600}
-            sx={{ textTransform: 'uppercase', letterSpacing: 0.5 }}
-          >
+      <Dialog open={open} onClose={() => setOpen(false)} fullScreen>
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             % of PR ({maxValue} {unit})
-          </Typography>
-          <List dense disablePadding sx={{ mt: 1 }}>
+            <IconButton onClick={() => setOpen(false)}>
+              <ArrowBack />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <List disablePadding>
             {PERCENTAGES.map((pct) => {
-              const value = parseFloat(((maxValue ?? 0) * pct / 100).toFixed(2))
+              const value = parseFloat((((maxValue ?? 0) * pct) / 100).toFixed(2))
               return (
-                <ListItem key={pct} disablePadding sx={{ py: 0.5 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
+                <ListItem key={pct} divider sx={{ py: 2 }}>
+                  <Box
+                    sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
+                  >
+                    <Typography variant="h6" color="text.secondary">
                       {pct}%
                     </Typography>
-                    <Typography variant="body2" fontWeight={600}>
+                    <Typography variant="h6" fontWeight={700}>
                       {value} {unit}
                     </Typography>
                   </Box>
@@ -119,8 +117,8 @@ export default function ExerciseDetailHeader({
               )
             })}
           </List>
-        </Box>
-      </Popover>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

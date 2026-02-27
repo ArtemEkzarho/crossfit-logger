@@ -19,7 +19,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Divider,
 } from '@mui/material'
 import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -92,9 +91,9 @@ export default function Layout() {
               <Close />
             </IconButton>
           </Box>
-          <Divider />
-          <SignedIn>
-            <List>
+
+          <List>
+            <SignedIn>
               <ListItem disablePadding>
                 <ListItemButton onClick={() => handleNavigate('/dashboard')}>
                   <ListItemText primary="Dashboard" />
@@ -105,8 +104,14 @@ export default function Layout() {
                   <ListItemText primary="Exercises" />
                 </ListItemButton>
               </ListItem>
-            </List>
-          </SignedIn>
+            </SignedIn>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => handleNavigate('/timer')}>
+                <ListItemText primary="Timer" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+
           <SignedOut>
             <List>
               <ListItem>
