@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Exercises from './pages/Exercises'
 import ExerciseDetail from './pages/Exercises/ExerciseDetail'
+import Timer from './pages/Timer'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/timer" element={<Timer />} />
           <Route
             path="/dashboard"
             element={
