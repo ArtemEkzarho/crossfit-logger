@@ -1,5 +1,6 @@
 import { Box, Chip, Paper, Typography } from '@mui/material'
 import { useAtomValue } from 'jotai'
+import { useTranslation } from 'react-i18next'
 import {
   currentRoundAtom,
   displaySecAtom,
@@ -20,25 +21,26 @@ function SubLabel() {
   const durationMin = useAtomValue(durationMinAtom)
   const tabataRounds = useAtomValue(tabataRoundsAtom)
   const phase = useAtomValue(phaseAtom)
+  const { t } = useTranslation()
 
   if (mode === 'EMOM') {
     return (
       <Typography variant="h6" color="text.secondary">
-        Minute {currentRound} / {durationMin}
+        {t('timer.display.minute', { current: currentRound, total: durationMin })}
       </Typography>
     )
   }
 
   if (mode === 'Tabata' && status !== 'idle') {
     return (
-      <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+      <Box display="flex" gap={1.5} alignItems="center">
         <Chip
-          label={phase === 'work' ? 'WORK' : 'REST'}
+          label={phase === 'work' ? t('timer.display.work') : t('timer.display.rest')}
           color={phase === 'work' ? 'success' : 'warning'}
           size="medium"
         />
         <Typography variant="h6" color="text.secondary">
-          Round {currentRound} / {tabataRounds}
+          {t('timer.display.round', { current: currentRound, total: tabataRounds })}
         </Typography>
       </Box>
     )
@@ -52,6 +54,7 @@ export default function TimerDisplay() {
   const preCountdown = useAtomValue(preCountdownAtom)
   const displaySec = useAtomValue(displaySecAtom)
   const color = useAtomValue(timerColorAtom)
+  const { t } = useTranslation()
 
   return (
     <Paper sx={{ p: 4, mb: 3, textAlign: 'center' }}>
@@ -69,8 +72,8 @@ export default function TimerDisplay() {
           >
             {preCountdown}
           </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
-            Get ready!
+          <Typography variant="h6" color="text.secondary" mt={2}>
+            {t('timer.display.getReady')}
           </Typography>
         </>
       ) : (
@@ -90,16 +93,14 @@ export default function TimerDisplay() {
             {fmt(displaySec)}
           </Typography>
           <Box
-            sx={{
-              mt: 2,
-              minHeight: 40,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            mt={2}
+            minHeight={40}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
           >
             {status === 'done' ? (
-              <Chip label="Done!" color="error" size="medium" />
+              <Chip label={t('timer.display.done')} color="error" size="medium" />
             ) : (
               <SubLabel />
             )}

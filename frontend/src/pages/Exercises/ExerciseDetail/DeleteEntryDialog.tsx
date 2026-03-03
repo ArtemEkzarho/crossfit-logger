@@ -6,6 +6,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 interface DeleteEntryDialogProps {
   open: boolean
@@ -20,16 +21,17 @@ export default function DeleteEntryDialog({
   onConfirm,
   onClose,
 }: DeleteEntryDialogProps) {
+  const { t } = useTranslation()
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Delete Entry</DialogTitle>
+      <DialogTitle>{t('exerciseDetail.deleteDialog.title')}</DialogTitle>
       <DialogContent>
-        <Typography>Are you sure you want to delete this weight entry?</Typography>
+        <Typography>{t('exerciseDetail.deleteDialog.confirm')}</Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common.cancel')}</Button>
         <Button onClick={onConfirm} color="error" variant="contained" disabled={isDeleting}>
-          {isDeleting ? 'Deleting...' : 'Delete'}
+          {isDeleting ? t('common.deleting') : t('common.delete')}
         </Button>
       </DialogActions>
     </Dialog>

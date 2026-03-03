@@ -18,6 +18,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import type { ExerciseMetric, WeightEntry } from '../../../types/exercise'
 
 interface WeightHistoryProps {
@@ -32,15 +33,22 @@ function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString()
 }
 
-export default function WeightHistory({ entries, maxValue, metric, onEdit, onDelete }: WeightHistoryProps) {
+export default function WeightHistory({
+  entries,
+  maxValue,
+  metric,
+  onEdit,
+  onDelete,
+}: WeightHistoryProps) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const isReps = metric === 'reps'
+  const { t } = useTranslation()
 
   if (entries.length === 0) {
     return (
       <Paper sx={{ p: 4, textAlign: 'center' }}>
-        <Typography color="text.secondary">No entries yet. Log your first entry!</Typography>
+        <Typography color="text.secondary">{t('exerciseDetail.weightHistory.empty')}</Typography>
       </Paper>
     )
   }
@@ -54,50 +62,61 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
           return (
             <Card key={entry._id}>
               <CardContent sx={{ pb: '12px !important' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
                   <Box>
-                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5, mb: 0.5 }}>
+                    <Box display="flex" alignItems="baseline" gap={0.5} mb={0.5}>
                       <Typography variant="h6" fontWeight={700}>
                         {primaryValue ?? '—'}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {isReps ? 'reps' : 'kg'}
+                        {isReps
+                          ? t('exerciseDetail.weightHistory.header.reps')
+                          : t('dashboard.unit.kg')}
                       </Typography>
-                      {isPR && <Chip label="PR" size="small" color="primary" sx={{ ml: 1 }} />}
+                      {isPR && (
+                        <Chip
+                          label={t('exerciseDetail.weightHistory.pr')}
+                          size="small"
+                          color="primary"
+                          sx={{ ml: 1 }}
+                        />
+                      )}
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Box display="flex" gap={1} flexWrap="wrap">
                       <Typography variant="body2" color="text.secondary">
                         {formatDate(entry.date)}
                       </Typography>
                       {isReps && entry.weight != null && (
                         <Typography variant="body2" color="text.secondary">
-                          · {entry.weight} kg
+                          · {entry.weight} {t('dashboard.unit.kg')}
                         </Typography>
                       )}
                       {!isReps && entry.reps != null && (
                         <Typography variant="body2" color="text.secondary">
-                          · {entry.reps} reps
+                          · {entry.reps}{' '}
+                          {t('exerciseDetail.weightHistory.header.reps').toLowerCase()}
                         </Typography>
                       )}
                       {entry.sets != null && (
                         <Typography variant="body2" color="text.secondary">
-                          · {entry.sets} sets
+                          · {entry.sets}{' '}
+                          {t('exerciseDetail.weightHistory.header.sets').toLowerCase()}
                         </Typography>
                       )}
                     </Box>
                     {entry.notes && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      <Typography variant="body2" color="text.secondary" mt={0.5}>
                         {entry.notes}
                       </Typography>
                     )}
                   </Box>
                   <Box>
-                    <Tooltip title="Edit">
+                    <Tooltip title={t('common.edit')}>
                       <IconButton size="small" onClick={() => onEdit(entry)}>
                         <Edit fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Delete">
+                    <Tooltip title={t('common.delete')}>
                       <IconButton size="small" color="error" onClick={() => onDelete(entry._id)}>
                         <Delete fontSize="small" />
                       </IconButton>
@@ -117,16 +136,18 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
+            <TableCell>{t('exerciseDetail.weightHistory.header.date')}</TableCell>
             {isReps ? (
-              <TableCell align="right">Reps</TableCell>
+              <TableCell align="right">{t('exerciseDetail.weightHistory.header.reps')}</TableCell>
             ) : (
-              <TableCell align="right">Weight (kg)</TableCell>
+              <TableCell align="right">{t('exerciseDetail.weightHistory.header.weight')}</TableCell>
             )}
-            {!isReps && <TableCell align="right">Reps</TableCell>}
-            <TableCell align="right">Sets</TableCell>
-            <TableCell>Notes</TableCell>
-            <TableCell align="center">Actions</TableCell>
+            {!isReps && (
+              <TableCell align="right">{t('exerciseDetail.weightHistory.header.reps')}</TableCell>
+            )}
+            <TableCell align="right">{t('exerciseDetail.weightHistory.header.sets')}</TableCell>
+            <TableCell>{t('exerciseDetail.weightHistory.header.notes')}</TableCell>
+            <TableCell align="center">{t('exerciseDetail.weightHistory.header.actions')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -137,11 +158,15 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
               <TableRow key={entry._id} hover>
                 <TableCell>{formatDate(entry.date)}</TableCell>
                 <TableCell align="right">
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
-                    <Typography fontWeight={isPR ? 700 : 400}>
-                      {primaryValue ?? '—'}
-                    </Typography>
-                    {isPR && <Chip label="PR" size="small" color="primary" />}
+                  <Box display="flex" alignItems="center" justifyContent="flex-end" gap={1}>
+                    <Typography fontWeight={isPR ? 700 : 400}>{primaryValue ?? '—'}</Typography>
+                    {isPR && (
+                      <Chip
+                        label={t('exerciseDetail.weightHistory.pr')}
+                        size="small"
+                        color="primary"
+                      />
+                    )}
                   </Box>
                 </TableCell>
                 {!isReps && <TableCell align="right">{entry.reps ?? '—'}</TableCell>}
@@ -150,12 +175,12 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
                   {entry.notes || '—'}
                 </TableCell>
                 <TableCell align="center">
-                  <Tooltip title="Edit">
+                  <Tooltip title={t('common.edit')}>
                     <IconButton size="small" onClick={() => onEdit(entry)}>
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete">
+                  <Tooltip title={t('common.delete')}>
                     <IconButton size="small" color="error" onClick={() => onDelete(entry._id)}>
                       <Delete fontSize="small" />
                     </IconButton>

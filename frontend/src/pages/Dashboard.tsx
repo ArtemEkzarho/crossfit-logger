@@ -1,13 +1,6 @@
-import {
-  Alert,
-  Box,
-  Chip,
-  CircularProgress,
-  Container,
-  Paper,
-  Typography,
-} from '@mui/material'
+import { Alert, Box, Chip, CircularProgress, Container, Paper, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   CartesianGrid,
   Legend,
@@ -43,6 +36,9 @@ function formatDate(dateStr: string): string {
 function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
   const metric = getExerciseMetric(selectedExercise)
   const userNames = [...new Set(exercises.map((e) => e.userName || 'Unknown'))]
+  const fallbackUsers = new Set(
+    exercises.filter((e) => e.isFallback).map((e) => e.userName || 'Unknown')
+  )
 
   const dateMap = new Map<string, Record<string, string | number>>()
 
@@ -68,30 +64,32 @@ function buildChartData(exercises: Exercise[], selectedExercise: ExerciseName) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([, value]) => value)
 
-  return { data, users: userNames, metric }
+  return { data, users: userNames, metric, fallbackUsers }
 }
 
 export default function Dashboard() {
   const [selectedExercise, setSelectedExercise] = useState<ExerciseName>(EXERCISE_NAMES[0])
   const { data: exercises, isLoading, error } = useExerciseAnalytics(selectedExercise)
+  const { t } = useTranslation()
 
   const {
     data: chartData,
     users,
     metric,
+    fallbackUsers,
   } = useMemo(
     () =>
       exercises
         ? buildChartData(exercises, selectedExercise)
-        : { data: [], users: [], metric: 'weight' as const },
+        : { data: [], users: [], metric: 'weight' as const, fallbackUsers: new Set<string>() },
     [exercises, selectedExercise]
   )
 
   if (error) {
     return (
       <Container maxWidth="lg">
-        <Box sx={{ my: 4 }}>
-          <Alert severity="error">Failed to load analytics: {error.message}</Alert>
+        <Box my={4}>
+          <Alert severity="error">{t('dashboard.error', { message: error.message })}</Alert>
         </Box>
       </Container>
     )
@@ -99,20 +97,21 @@ export default function Dashboard() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
+      <Box my={4}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Analytics Dashboard
+          {t('dashboard.title')}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Max progression per user
+          {t('dashboard.subtitle')}
         </Typography>
 
         <Paper sx={{ p: 3, mt: 3 }}>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 1.5 }}>
-              {selectedExercise} — {metric === 'reps' ? 'Max Reps' : 'Max Weight (kg)'}
+          <Box mb={3}>
+            <Typography variant="h6" mb={1.5}>
+              {selectedExercise} —{' '}
+              {metric === 'reps' ? t('dashboard.metricReps') : t('dashboard.metricWeight')}
             </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box display="flex" flexWrap="wrap" gap={1}>
               {EXERCISE_NAMES.map((name) => (
                 <Chip
                   key={name}
@@ -127,37 +126,51 @@ export default function Dashboard() {
           </Box>
 
           {isLoading ? (
-            <Box
-              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}
-            >
+            <Box display="flex" alignItems="center" justifyContent="center" height={400}>
               <CircularProgress />
             </Box>
           ) : chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis unit={metric === 'reps' ? ' reps' : ' kg'} />
-                <Tooltip />
-                <Legend />
-                {users.map((user, i) => (
-                  <Line
-                    key={user}
-                    type="monotone"
-                    dataKey={user}
-                    stroke={USER_COLORS[i % USER_COLORS.length]}
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                    connectNulls
+            <>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis
+                    unit={metric === 'reps' ? t('dashboard.unit.reps') : t('dashboard.unit.kg')}
                   />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
+                  <Tooltip />
+                  <Legend />
+                  {users.map((user, i) => {
+                    const color = USER_COLORS[i % USER_COLORS.length]
+                    const isFallback = fallbackUsers.has(user)
+                    return (
+                      <Line
+                        key={user}
+                        type="monotone"
+                        dataKey={user}
+                        stroke={color}
+                        strokeWidth={2}
+                        strokeDasharray={isFallback ? '5 5' : undefined}
+                        dot={
+                          isFallback
+                            ? { r: 5, fill: 'white', strokeWidth: 2, stroke: color }
+                            : { r: 4 }
+                        }
+                        connectNulls
+                      />
+                    )
+                  })}
+                </LineChart>
+              </ResponsiveContainer>
+              {fallbackUsers.size > 0 && (
+                <Typography variant="caption" color="text.secondary" mt={1} display="block">
+                  {t('dashboard.prNote')}
+                </Typography>
+              )}
+            </>
           ) : (
-            <Box
-              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}
-            >
-              <Typography color="text.secondary">No data available</Typography>
+            <Box display="flex" alignItems="center" justifyContent="center" height={400}>
+              <Typography color="text.secondary">{t('dashboard.noData')}</Typography>
             </Box>
           )}
         </Paper>

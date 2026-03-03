@@ -2,80 +2,82 @@ import { Container, Typography, Box, Button, Card, CardContent } from '@mui/mate
 import { SignInButton, SignUpButton, SignedOut, SignedIn } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom'
 import { FitnessCenter } from '@mui/icons-material'
+import { useTranslation } from 'react-i18next'
 
 export default function Home() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ my: 8, textAlign: 'center' }}>
+      <Box my={8} textAlign="center">
         <FitnessCenter sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
         <Typography variant="h2" component="h1" gutterBottom>
-          Welcome to Crossfit Logger
+          {t('home.title')}
         </Typography>
         <Typography variant="h5" color="text.secondary" paragraph>
-          Track your workouts, monitor your progress, and achieve your fitness goals.
+          {t('home.subtitle')}
         </Typography>
 
         <SignedOut>
-          <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>
+          <Box mt={4} display="flex" gap={2} justifyContent="center">
             <SignInButton mode="modal">
               <Button variant="contained" size="large">
-                Sign In
+                {t('auth.signIn')}
               </Button>
             </SignInButton>
             <SignUpButton mode="modal">
               <Button variant="outlined" size="large">
-                Sign Up
+                {t('auth.signUp')}
               </Button>
             </SignUpButton>
           </Box>
         </SignedOut>
 
         <SignedIn>
-          <Box sx={{ mt: 4 }}>
+          <Box mt={4}>
             <Button
               variant="contained"
               size="large"
               onClick={() => navigate('/dashboard')}
             >
-              Go to Dashboard
+              {t('home.goDashboard')}
             </Button>
           </Box>
         </SignedIn>
 
-        <Box sx={{ mt: 6 }}>
+        <Box mt={6}>
           <Typography variant="h4" gutterBottom>
-            Features
+            {t('home.features')}
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, mt: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <Box display="flex" gap={2} mt={3} flexWrap="wrap" justifyContent="center">
             <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Track Workouts
+                  {t('home.feature.trackWorkouts')}
                 </Typography>
                 <Typography color="text.secondary">
-                  Log your CrossFit WODs, lifts, and cardio sessions with ease.
+                  {t('home.feature.trackWorkoutsDesc')}
                 </Typography>
               </CardContent>
             </Card>
             <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Monitor Progress
+                  {t('home.feature.monitorProgress')}
                 </Typography>
                 <Typography color="text.secondary">
-                  View your improvement over time with charts and statistics.
+                  {t('home.feature.monitorProgressDesc')}
                 </Typography>
               </CardContent>
             </Card>
             <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Set Goals
+                  {t('home.feature.setGoals')}
                 </Typography>
                 <Typography color="text.secondary">
-                  Define and track your fitness goals to stay motivated.
+                  {t('home.feature.setGoalsDesc')}
                 </Typography>
               </CardContent>
             </Card>

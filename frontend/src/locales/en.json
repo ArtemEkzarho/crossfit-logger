@@ -1,0 +1,154 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "saving": "Saving...",
+    "deleting": "Deleting..."
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "layout": {
+    "appName": "Crossfit Logger",
+    "nav": {
+      "dashboard": "Dashboard",
+      "exercises": "Exercises",
+      "timer": "Timer"
+    }
+  },
+  "home": {
+    "title": "Welcome to Crossfit Logger",
+    "subtitle": "Track your workouts, monitor your progress, and achieve your fitness goals.",
+    "goDashboard": "Go to Dashboard",
+    "features": "Features",
+    "feature": {
+      "trackWorkouts": "Track Workouts",
+      "trackWorkoutsDesc": "Log your CrossFit WODs, lifts, and cardio sessions with ease.",
+      "monitorProgress": "Monitor Progress",
+      "monitorProgressDesc": "View your improvement over time with charts and statistics.",
+      "setGoals": "Set Goals",
+      "setGoalsDesc": "Define and track your fitness goals to stay motivated."
+    }
+  },
+  "dashboard": {
+    "title": "Analytics Dashboard",
+    "subtitle": "Max progression per user",
+    "metricReps": "Max Reps",
+    "metricWeight": "Max Weight (kg)",
+    "unit": {
+      "reps": " reps",
+      "kg": " kg"
+    },
+    "prNote": "* Dashed line — all-time PR (no entries in the last 7 days)",
+    "noData": "No data available",
+    "error": "Failed to load analytics: {{message}}"
+  },
+  "exercises": {
+    "title": "Exercises",
+    "subtitle": "Track and manage your workout exercises.",
+    "successLogged": "Weight logged successfully",
+    "error": "Failed to load exercises: {{message}}",
+    "form": {
+      "title": "Log Entry",
+      "name": "Exercise Name",
+      "weight": "Weight (kg)",
+      "weightHelper": "1 – 300 kg",
+      "reps": "Reps",
+      "repsHelper": "1 – 500",
+      "sets": "Sets",
+      "setsHelper": "1 – 10",
+      "notes": "Notes",
+      "date": "Date",
+      "submit": "Log"
+    },
+    "table": {
+      "empty": "No exercises yet",
+      "emptyDesc": "Start tracking your workouts by logging your first entry.",
+      "logEntry": "Log Entry",
+      "header": {
+        "exercise": "Exercise",
+        "best": "Best",
+        "entries": "Entries",
+        "lastLogged": "Last Logged"
+      }
+    },
+    "deleteDialog": {
+      "title": "Delete Exercise",
+      "confirm": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+    }
+  },
+  "exerciseDetail": {
+    "successLogged": "Entry logged",
+    "successUpdated": "Entry updated",
+    "successDeleted": "Entry deleted",
+    "notFound": "Exercise not found",
+    "history": "History",
+    "header": {
+      "back": "Back to Exercises",
+      "personalBest": "personal best",
+      "noPR": "No PR yet",
+      "percentOfPR": "% of PR",
+      "logEntry": "Log Entry",
+      "prDialogTitle": "% of PR ({{value}} {{unit}})"
+    },
+    "weightHistory": {
+      "empty": "No entries yet. Log your first entry!",
+      "pr": "PR",
+      "header": {
+        "date": "Date",
+        "weight": "Weight (kg)",
+        "reps": "Reps",
+        "sets": "Sets",
+        "notes": "Notes",
+        "actions": "Actions"
+      }
+    },
+    "editDialog": {
+      "title": "Edit Entry",
+      "submit": "Update"
+    },
+    "deleteDialog": {
+      "title": "Delete Entry",
+      "confirm": "Are you sure you want to delete this weight entry?"
+    }
+  },
+  "timer": {
+    "title": "Timer",
+    "subtitle": "crossfit interval timer",
+    "mode": {
+      "amrap": "AMRAP",
+      "emom": "EMOM",
+      "forTime": "For Time",
+      "tabata": "Tabata"
+    },
+    "config": {
+      "forTimeHint": "Press Start and stop when you finish.",
+      "work": "Work (sec)",
+      "workHelper": "5 – 300 s",
+      "rest": "Rest (sec)",
+      "restHelper": "1 – 300 s",
+      "rounds": "Rounds",
+      "roundsHelper": "1 – 50",
+      "duration": "Duration (min)",
+      "durationHelper": "1 – 120 min"
+    },
+    "display": {
+      "getReady": "Get ready!",
+      "work": "WORK",
+      "rest": "REST",
+      "done": "Done!",
+      "minute": "Minute {{current}} / {{total}}",
+      "round": "Round {{current}} / {{total}}"
+    },
+    "controls": {
+      "reset": "Reset",
+      "pause": "Pause",
+      "cancel": "Cancel",
+      "resume": "Resume",
+      "start": "Start",
+      "new": "New"
+    }
+  }
+}

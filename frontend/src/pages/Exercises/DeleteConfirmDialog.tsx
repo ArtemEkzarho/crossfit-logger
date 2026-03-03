@@ -6,6 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import type { Exercise } from '../../types/exercise'
 
 interface DeleteConfirmDialogProps {
@@ -23,23 +24,24 @@ export default function DeleteConfirmDialog({
   onConfirm,
   onClose,
 }: DeleteConfirmDialogProps) {
+  const { t } = useTranslation()
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Delete Exercise</DialogTitle>
+      <DialogTitle>{t('exercises.deleteDialog.title')}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Are you sure you want to delete "{exercise?.name}"? This action cannot be undone.
+          {t('exercises.deleteDialog.confirm', { name: exercise?.name })}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common.cancel')}</Button>
         <Button
           onClick={onConfirm}
           color="error"
           variant="contained"
           disabled={isDeleting}
         >
-          {isDeleting ? 'Deleting...' : 'Delete'}
+          {isDeleting ? t('common.deleting') : t('common.delete')}
         </Button>
       </DialogActions>
     </Dialog>

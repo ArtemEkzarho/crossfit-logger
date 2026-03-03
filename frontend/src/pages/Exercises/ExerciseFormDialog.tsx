@@ -12,6 +12,7 @@ import {
   type SelectChangeEvent,
   TextField,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import type { ExerciseName } from '../../types/exercise'
 import { EXERCISE_NAMES, getExerciseMetric } from '../../types/exercise'
 
@@ -54,6 +55,7 @@ export default function ExerciseFormDialog({
   onSubmit,
   onClose,
 }: ExerciseFormDialogProps) {
+  const { t } = useTranslation()
   const metric = formData.name ? getExerciseMetric(formData.name) : 'weight'
   const isReps = metric === 'reps'
 
@@ -71,15 +73,15 @@ export default function ExerciseFormDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Log Entry</DialogTitle>
+      <DialogTitle>{t('exercises.form.title')}</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <Box display="flex" flexDirection="column" gap={2} pt={1}>
           <FormControl fullWidth required>
-            <InputLabel id="exercise-name-label">Exercise Name</InputLabel>
+            <InputLabel id="exercise-name-label">{t('exercises.form.name')}</InputLabel>
             <Select
               labelId="exercise-name-label"
               value={formData.name}
-              label="Exercise Name"
+              label={t('exercises.form.name')}
               onChange={onSelectChange}
               disabled={!!lockedName}
             >
@@ -92,37 +94,37 @@ export default function ExerciseFormDialog({
           </FormControl>
           {!isReps && (
             <TextField
-              label="Weight (kg)"
+              label={t('exercises.form.weight')}
               type="number"
               value={formData.weight}
               onChange={onFormChange('weight')}
               required
               fullWidth
               slotProps={{ htmlInput: { min: 1, max: 300 } }}
-              helperText="1 – 300 kg"
+              helperText={t('exercises.form.weightHelper')}
             />
           )}
           <TextField
-            label="Reps"
+            label={t('exercises.form.reps')}
             type="number"
             value={formData.reps}
             onChange={onFormChange('reps')}
             required={isReps}
             fullWidth
             slotProps={{ htmlInput: { min: 1, max: 500 } }}
-            helperText="1 – 500"
+            helperText={t('exercises.form.repsHelper')}
           />
           <TextField
-            label="Sets"
+            label={t('exercises.form.sets')}
             type="number"
             value={formData.sets}
             onChange={onFormChange('sets')}
             fullWidth
             slotProps={{ htmlInput: { min: 1, max: 10 } }}
-            helperText="1 – 10"
+            helperText={t('exercises.form.setsHelper')}
           />
           <TextField
-            label="Notes"
+            label={t('exercises.form.notes')}
             value={formData.notes}
             onChange={onFormChange('notes')}
             multiline
@@ -132,7 +134,7 @@ export default function ExerciseFormDialog({
             helperText={`${formData.notes.length} / 300`}
           />
           <TextField
-            label="Date"
+            label={t('exercises.form.date')}
             type="date"
             value={formData.date}
             onChange={onFormChange('date')}
@@ -142,9 +144,9 @@ export default function ExerciseFormDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common.cancel')}</Button>
         <Button onClick={onSubmit} variant="contained" disabled={isSubmitDisabled}>
-          {isSaving ? 'Saving...' : 'Log'}
+          {isSaving ? t('common.saving') : t('exercises.form.submit')}
         </Button>
       </DialogActions>
     </Dialog>

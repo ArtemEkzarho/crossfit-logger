@@ -18,6 +18,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import type { Exercise } from '../../types/exercise'
 import { getExerciseMetric, getMaxValue } from '../../types/exercise'
 
@@ -34,18 +35,19 @@ function formatDate(dateString: string) {
 export default function ExercisesTable({ exercises, onNavigate, onCreate }: ExercisesTableProps) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const { t } = useTranslation()
 
   if (exercises.length === 0) {
     return (
       <Paper sx={{ p: 4, mt: 3, textAlign: 'center' }}>
         <Typography variant="h6" color="text.secondary" gutterBottom>
-          No exercises yet
+          {t('exercises.table.empty')}
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          Start tracking your workouts by logging your first entry.
+          {t('exercises.table.emptyDesc')}
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={onCreate}>
-          Log Entry
+          {t('exercises.table.logEntry')}
         </Button>
       </Paper>
     )
@@ -53,7 +55,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
 
   if (isMobile) {
     return (
-      <Stack spacing={2} sx={{ mt: 3 }}>
+      <Stack spacing={2} mt={3}>
         {exercises.map((exercise) => {
           const maxValue = getMaxValue(exercise)
           const metric = getExerciseMetric(exercise.name)
@@ -62,13 +64,13 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
             <Card key={exercise._id}>
               <CardActionArea onClick={() => onNavigate(exercise.name)}>
                 <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Box>
                       <Typography variant="h6">{exercise.name}</Typography>
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 0.5 }}>
+                      <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
                         {maxValue != null && (
                           <Chip
-                            label={`${maxValue} ${metric === 'reps' ? 'reps' : 'kg'}`}
+                            label={`${maxValue} ${metric === 'reps' ? t('exerciseDetail.weightHistory.header.reps') : t('dashboard.unit.kg')}`}
                             size="small"
                             color="primary"
                           />
@@ -81,7 +83,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
                           />
                         )}
                         <Chip
-                          label={`${exercise.weightHistory.length} entries`}
+                          label={`${exercise.weightHistory.length} ${t('exercises.table.header.entries').toLowerCase()}`}
                           size="small"
                           variant="outlined"
                         />
@@ -103,10 +105,10 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Exercise</TableCell>
-            <TableCell align="right">Best</TableCell>
-            <TableCell align="right">Entries</TableCell>
-            <TableCell>Last Logged</TableCell>
+            <TableCell>{t('exercises.table.header.exercise')}</TableCell>
+            <TableCell align="right">{t('exercises.table.header.best')}</TableCell>
+            <TableCell align="right">{t('exercises.table.header.entries')}</TableCell>
+            <TableCell>{t('exercises.table.header.lastLogged')}</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
@@ -128,7 +130,10 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
                 <TableCell align="right">
                   {maxValue != null ? (
                     <Typography fontWeight={700} color="primary">
-                      {maxValue} {metric === 'reps' ? 'reps' : 'kg'}
+                      {maxValue}{' '}
+                      {metric === 'reps'
+                        ? t('exerciseDetail.weightHistory.header.reps')
+                        : t('dashboard.unit.kg')}
                     </Typography>
                   ) : (
                     '—'
