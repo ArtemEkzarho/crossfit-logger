@@ -8,7 +8,7 @@ export default function Home() {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ my: 8, textAlign: 'center' }}>
+      <Box my={8} textAlign="center">
         <FitnessCenter sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
         <Typography variant="h2" component="h1" gutterBottom>
           Welcome to Crossfit Logger
@@ -18,7 +18,7 @@ export default function Home() {
         </Typography>
 
         <SignedOut>
-          <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>
+          <Box mt={4} display="flex" gap={2} justifyContent="center">
             <SignInButton mode="modal">
               <Button variant="contained" size="large">
                 Sign In
@@ -33,7 +33,7 @@ export default function Home() {
         </SignedOut>
 
         <SignedIn>
-          <Box sx={{ mt: 4 }}>
+          <Box mt={4}>
             <Button
               variant="contained"
               size="large"
@@ -44,11 +44,11 @@ export default function Home() {
           </Box>
         </SignedIn>
 
-        <Box sx={{ mt: 6 }}>
+        <Box mt={6}>
           <Typography variant="h4" gutterBottom>
             Features
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, mt: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <Box display="flex" gap={2} mt={3} flexWrap="wrap" justifyContent="center">
             <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>

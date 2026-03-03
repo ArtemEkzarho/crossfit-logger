@@ -57,7 +57,7 @@ export default function TimerConfig() {
           Press Start and stop when you finish.
         </Typography>
       ) : mode === 'Tabata' ? (
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <Box display="flex" gap={2} flexWrap="wrap">
           <ConfigField
             label="Work (sec)"
             value={tabataWork}

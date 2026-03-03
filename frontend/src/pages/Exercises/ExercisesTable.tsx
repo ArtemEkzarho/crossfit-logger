@@ -53,7 +53,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
 
   if (isMobile) {
     return (
-      <Stack spacing={2} sx={{ mt: 3 }}>
+      <Stack spacing={2} mt={3}>
         {exercises.map((exercise) => {
           const maxValue = getMaxValue(exercise)
           const metric = getExerciseMetric(exercise.name)
@@ -62,10 +62,10 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
             <Card key={exercise._id}>
               <CardActionArea onClick={() => onNavigate(exercise.name)}>
                 <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Box>
                       <Typography variant="h6">{exercise.name}</Typography>
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 0.5 }}>
+                      <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
                         {maxValue != null && (
                           <Chip
                             label={`${maxValue} ${metric === 'reps' ? 'reps' : 'kg'}`}

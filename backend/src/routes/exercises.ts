@@ -1,5 +1,6 @@
 import express, { Response } from 'express';
 import { clerkClient, requireAuth, getAuth } from '@clerk/express';
+import { Types } from 'mongoose';
 import Exercise from '../models/Exercise';
 
 const router = express.Router();
@@ -125,6 +126,12 @@ router.post('/', async (req, res: Response) => {
 router.put('/:name/entries/:entryId', async (req, res: Response) => {
   try {
     const { userId } = getAuth(req);
+
+    if (!Types.ObjectId.isValid(req.params.entryId)) {
+      return res.status(400).json({ error: 'Invalid entry ID' });
+    }
+    const entryId = new Types.ObjectId(req.params.entryId);
+
     const { weight, reps, sets, notes, date } = req.body;
 
     const update: Record<string, unknown> = {};
@@ -135,7 +142,7 @@ router.put('/:name/entries/:entryId', async (req, res: Response) => {
     if (date !== undefined) update['weightHistory.$.date'] = new Date(date);
 
     const exercise = await Exercise.findOneAndUpdate(
-      { userId, name: req.params.name, 'weightHistory._id': req.params.entryId },
+      { userId, name: req.params.name, 'weightHistory._id': entryId },
       { $set: update },
       { new: true }
     );
@@ -155,9 +162,14 @@ router.delete('/:name/entries/:entryId', async (req, res: Response) => {
   try {
     const { userId } = getAuth(req);
 
+    if (!Types.ObjectId.isValid(req.params.entryId)) {
+      return res.status(400).json({ error: 'Invalid entry ID' });
+    }
+    const entryId = new Types.ObjectId(req.params.entryId);
+
     const exercise = await Exercise.findOneAndUpdate(
       { userId, name: req.params.name },
-      { $pull: { weightHistory: { _id: req.params.entryId } } },
+      { $pull: { weightHistory: { _id: entryId } } },
       { new: true }
     );
 

@@ -10,7 +10,7 @@ export default function TimerControls() {
   const reset = useSetAtom(resetAtom)
 
   return (
-    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+    <Box display="flex" gap={2} justifyContent="center">
       <Button
         variant="outlined"
         size="large"

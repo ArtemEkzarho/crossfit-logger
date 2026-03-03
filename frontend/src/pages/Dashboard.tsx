@@ -90,7 +90,7 @@ export default function Dashboard() {
   if (error) {
     return (
       <Container maxWidth="lg">
-        <Box sx={{ my: 4 }}>
+        <Box my={4}>
           <Alert severity="error">Failed to load analytics: {error.message}</Alert>
         </Box>
       </Container>
@@ -99,7 +99,7 @@ export default function Dashboard() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
+      <Box my={4}>
         <Typography variant="h3" component="h1" gutterBottom>
           Analytics Dashboard
         </Typography>
@@ -108,11 +108,11 @@ export default function Dashboard() {
         </Typography>
 
         <Paper sx={{ p: 3, mt: 3 }}>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 1.5 }}>
+          <Box mb={3}>
+            <Typography variant="h6" mb={1.5}>
               {selectedExercise} — {metric === 'reps' ? 'Max Reps' : 'Max Weight (kg)'}
             </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box display="flex" flexWrap="wrap" gap={1}>
               {EXERCISE_NAMES.map((name) => (
                 <Chip
                   key={name}
@@ -128,7 +128,10 @@ export default function Dashboard() {
 
           {isLoading ? (
             <Box
-              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              height={400}
             >
               <CircularProgress />
             </Box>
@@ -155,7 +158,10 @@ export default function Dashboard() {
             </ResponsiveContainer>
           ) : (
             <Box
-              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              height={400}
             >
               <Typography color="text.secondary">No data available</Typography>
             </Box>

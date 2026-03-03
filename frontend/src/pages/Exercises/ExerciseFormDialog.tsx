@@ -73,7 +73,7 @@ export default function ExerciseFormDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Log Entry</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <Box display="flex" flexDirection="column" gap={2} pt={1}>
           <FormControl fullWidth required>
             <InputLabel id="exercise-name-label">Exercise Name</InputLabel>
             <Select

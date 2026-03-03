@@ -121,7 +121,7 @@ export default function ExerciseDetail() {
   if (isLoading) {
     return (
       <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
           <CircularProgress />
         </Box>
       </Container>
@@ -131,7 +131,7 @@ export default function ExerciseDetail() {
   if (error || !exercise) {
     return (
       <Container maxWidth="lg">
-        <Box sx={{ my: 4 }}>
+        <Box my={4}>
           <ExerciseDetailHeader
             name={decodedName}
             maxValue={undefined}
@@ -155,7 +155,7 @@ export default function ExerciseDetail() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
+      <Box my={4}>
         <ExerciseDetailHeader
           name={exercise.name}
           maxValue={maxValue}

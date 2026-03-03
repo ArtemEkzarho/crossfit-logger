@@ -41,35 +41,33 @@ export default function ExerciseDetailHeader({
       </Button>
 
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: 2,
-          mb: 4,
-        }}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        flexWrap="wrap"
+        gap={2}
+        mb={4}
       >
         <Box>
           <Typography variant="h3" component="h1">
             {name}
           </Typography>
           {maxValue != null && (
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 1 }}>
+            <Box display="flex" alignItems="baseline" gap={1} mt={1}>
               <Typography variant="h2" color="primary" fontWeight={700}>
                 {maxValue}
               </Typography>
               <Typography variant="h5" color="text.secondary">
                 {unit}
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+              <Typography variant="body2" color="text.secondary" ml={1}>
                 personal best
               </Typography>
             </Box>
           )}
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+        <Box display="flex" gap={1} alignItems="center">
           <Tooltip title={maxValue == null ? 'No PR yet' : '% of PR'}>
             <span>
               <IconButton
@@ -90,7 +88,7 @@ export default function ExerciseDetailHeader({
 
       <Dialog open={open} onClose={() => setOpen(false)} fullScreen>
         <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
             % of PR ({maxValue} {unit})
             <IconButton onClick={() => setOpen(false)}>
               <ArrowBack />
@@ -103,9 +101,7 @@ export default function ExerciseDetailHeader({
               const value = parseFloat((((maxValue ?? 0) * pct) / 100).toFixed(2))
               return (
                 <ListItem key={pct} divider sx={{ py: 2 }}>
-                  <Box
-                    sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
-                  >
+                  <Box display="flex" justifyContent="space-between" width="100%">
                     <Typography variant="h6" color="text.secondary">
                       {pct}%
                     </Typography>

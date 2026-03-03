@@ -54,9 +54,9 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
           return (
             <Card key={entry._id}>
               <CardContent sx={{ pb: '12px !important' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
                   <Box>
-                    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5, mb: 0.5 }}>
+                    <Box display="flex" alignItems="baseline" gap={0.5} mb={0.5}>
                       <Typography variant="h6" fontWeight={700}>
                         {primaryValue ?? '—'}
                       </Typography>
@@ -65,7 +65,7 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
                       </Typography>
                       {isPR && <Chip label="PR" size="small" color="primary" sx={{ ml: 1 }} />}
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Box display="flex" gap={1} flexWrap="wrap">
                       <Typography variant="body2" color="text.secondary">
                         {formatDate(entry.date)}
                       </Typography>
@@ -86,7 +86,7 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
                       )}
                     </Box>
                     {entry.notes && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      <Typography variant="body2" color="text.secondary" mt={0.5}>
                         {entry.notes}
                       </Typography>
                     )}
@@ -137,7 +137,7 @@ export default function WeightHistory({ entries, maxValue, metric, onEdit, onDel
               <TableRow key={entry._id} hover>
                 <TableCell>{formatDate(entry.date)}</TableCell>
                 <TableCell align="right">
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
+                  <Box display="flex" alignItems="center" justifyContent="flex-end" gap={1}>
                     <Typography fontWeight={isPR ? 700 : 400}>
                       {primaryValue ?? '—'}
                     </Typography>

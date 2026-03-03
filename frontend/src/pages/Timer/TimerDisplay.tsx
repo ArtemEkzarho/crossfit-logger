@@ -31,7 +31,7 @@ function SubLabel() {
 
   if (mode === 'Tabata' && status !== 'idle') {
     return (
-      <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+      <Box display="flex" gap={1.5} alignItems="center">
         <Chip
           label={phase === 'work' ? 'WORK' : 'REST'}
           color={phase === 'work' ? 'success' : 'warning'}
@@ -69,7 +69,7 @@ export default function TimerDisplay() {
           >
             {preCountdown}
           </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
+          <Typography variant="h6" color="text.secondary" mt={2}>
             Get ready!
           </Typography>
         </>
@@ -90,13 +90,11 @@ export default function TimerDisplay() {
             {fmt(displaySec)}
           </Typography>
           <Box
-            sx={{
-              mt: 2,
-              minHeight: 40,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            mt={2}
+            minHeight={40}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
           >
             {status === 'done' ? (
               <Chip label="Done!" color="error" size="medium" />

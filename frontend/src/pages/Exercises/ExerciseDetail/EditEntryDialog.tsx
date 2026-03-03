@@ -53,7 +53,7 @@ export default function EditEntryDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Edit Entry</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <Box display="flex" flexDirection="column" gap={2} pt={1}>
           {!isReps && (
             <TextField
               label="Weight (kg)"

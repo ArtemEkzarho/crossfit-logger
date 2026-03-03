@@ -16,7 +16,11 @@ export default function Exercises() {
 
   const [formOpen, setFormOpen] = useState(false)
   const [formData, setFormData] = useState<ExerciseFormData>(emptyForm)
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean
+    message: string
+    severity: 'success' | 'error'
+  }>({
     open: false,
     message: '',
     severity: 'success',
@@ -32,11 +36,10 @@ export default function Exercises() {
     setFormData(emptyForm)
   }
 
-  const handleFormChange = (field: keyof ExerciseFormData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }))
-  }
+  const handleFormChange =
+    (field: keyof ExerciseFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }))
+    }
 
   const handleSelectChange = (e: SelectChangeEvent) => {
     setFormData((prev) => ({ ...prev, name: e.target.value as ExerciseName }))
@@ -71,7 +74,12 @@ export default function Exercises() {
   if (isLoading) {
     return (
       <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="50vh"
+        >
           <CircularProgress />
         </Box>
       </Container>
@@ -81,7 +89,7 @@ export default function Exercises() {
   if (error) {
     return (
       <Container maxWidth="lg">
-        <Box sx={{ my: 4 }}>
+        <Box my={4}>
           <Alert severity="error">
             Failed to load exercises: {error instanceof Error ? error.message : 'Unknown error'}
           </Alert>
@@ -92,7 +100,7 @@ export default function Exercises() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
+      <Box my={4}>
         <Typography variant="h3" component="h1" gutterBottom>
           Exercises
         </Typography>
@@ -130,7 +138,10 @@ export default function Exercises() {
           autoHideDuration={4000}
           onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
         >
-          <Alert severity={snackbar.severity} onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}>
+          <Alert
+            severity={snackbar.severity}
+            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          >
             {snackbar.message}
           </Alert>
         </Snackbar>

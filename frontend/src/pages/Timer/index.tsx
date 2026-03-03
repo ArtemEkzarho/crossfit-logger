@@ -48,11 +48,11 @@ export default function Timer() {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ my: 4 }}>
+      <Box my={4}>
         <Typography variant="h3" component="h1" gutterBottom>
           Timer
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+        <Typography variant="body1" color="text.secondary" mb={3}>
           crossfit interval timer
         </Typography>
 
@@ -61,7 +61,7 @@ export default function Timer() {
           onChange={(_, i) => setMode(MODES[i])}
           variant="scrollable"
           scrollButtons="auto"
-          sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
+          sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}
         >
           {MODES.map((m) => (
             <Tab key={m} label={MODE_LABELS[m]} disabled={isActive} />

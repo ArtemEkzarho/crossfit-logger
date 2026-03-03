@@ -13,6 +13,7 @@ import {
   Typography,
   Button,
   Box,
+  Stack,
   IconButton,
   Drawer,
   List,
@@ -34,14 +35,16 @@ export default function Layout() {
   }
 
   return (
-    <>
-      <AppBar position="static">
+    <Stack height="100dvh">
+      <AppBar position="sticky">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
             <MenuIcon />
           </IconButton>
           <Box
-            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+            display="flex"
+            alignItems="center"
+            sx={{ cursor: 'pointer' }}
             onClick={() => handleNavigate('/')}
           >
             <FitnessCenter sx={{ mr: 1 }} />
@@ -52,34 +55,30 @@ export default function Layout() {
         </Toolbar>
       </AppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <Box sx={{ width: 250 }} role="presentation">
+        <Box width={250} role="presentation">
           <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              pr: 1,
-            }}
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            pr={1}
           >
             <SignedIn>
               <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  gap: 1.5,
-                  py: 2,
-                  overflow: 'hidden',
-                  cursor: 'pointer',
-                }}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flexDirection="row"
+                gap={1.5}
+                py={2}
+                overflow="hidden"
+                sx={{ cursor: 'pointer' }}
                 onClick={(e) => {
                   const btn =
                     e.currentTarget.querySelector<HTMLButtonElement>('.cl-userButtonTrigger')
                   btn?.click()
                 }}
               >
-                <Box sx={{ display: 'flex', pl: 2 }} onClick={(e) => e.stopPropagation()}>
+                <Box display="flex" pl={2} onClick={(e) => e.stopPropagation()}>
                   <UserButton />
                 </Box>
                 <Typography variant="subtitle1" noWrap>
@@ -132,7 +131,9 @@ export default function Layout() {
           </SignedOut>
         </Box>
       </Drawer>
-      <Outlet />
-    </>
+      <Box flex={1} overflow="auto">
+        <Outlet />
+      </Box>
+    </Stack>
   )
 }
