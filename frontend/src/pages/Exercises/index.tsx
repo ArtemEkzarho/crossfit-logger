@@ -2,6 +2,7 @@ import { Add } from '@mui/icons-material'
 import { Alert, Box, CircularProgress, Container, Fab, Snackbar, Typography } from '@mui/material'
 import type { SelectChangeEvent } from '@mui/material'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useExercises, useLogWeight } from '../../hooks/useExercises'
 import type { ExerciseName } from '../../types/exercise'
@@ -13,6 +14,7 @@ export default function Exercises() {
   const navigate = useNavigate()
   const { data: exercises, isLoading, error } = useExercises()
   const logWeight = useLogWeight()
+  const { t } = useTranslation()
 
   const [formOpen, setFormOpen] = useState(false)
   const [formData, setFormData] = useState<ExerciseFormData>(emptyForm)
@@ -60,7 +62,7 @@ export default function Exercises() {
         notes: formData.notes || undefined,
         date: formData.date,
       })
-      setSnackbar({ open: true, message: 'Weight logged successfully', severity: 'success' })
+      setSnackbar({ open: true, message: t('exercises.successLogged'), severity: 'success' })
       handleCloseForm()
     } catch (err) {
       setSnackbar({
@@ -91,7 +93,7 @@ export default function Exercises() {
       <Container maxWidth="lg">
         <Box my={4}>
           <Alert severity="error">
-            Failed to load exercises: {error instanceof Error ? error.message : 'Unknown error'}
+            {t('exercises.error', { message: error instanceof Error ? error.message : 'Unknown error' })}
           </Alert>
         </Box>
       </Container>
@@ -102,10 +104,10 @@ export default function Exercises() {
     <Container maxWidth="lg">
       <Box my={4}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Exercises
+          {t('exercises.title')}
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-          Track and manage your workout exercises.
+          {t('exercises.subtitle')}
         </Typography>
 
         <ExercisesTable

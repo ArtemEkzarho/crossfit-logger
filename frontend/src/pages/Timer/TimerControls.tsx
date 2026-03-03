@@ -1,6 +1,7 @@
 import { PauseCircle, PlayCircle, RestartAlt } from '@mui/icons-material'
 import { Box, Button } from '@mui/material'
 import { useAtomValue, useSetAtom } from 'jotai'
+import { useTranslation } from 'react-i18next'
 import { pauseAtom, resetAtom, startAtom, statusAtom } from './timerAtoms'
 
 export default function TimerControls() {
@@ -8,6 +9,7 @@ export default function TimerControls() {
   const start = useSetAtom(startAtom)
   const pause = useSetAtom(pauseAtom)
   const reset = useSetAtom(resetAtom)
+  const { t } = useTranslation()
 
   return (
     <Box display="flex" gap={2} justifyContent="center">
@@ -18,12 +20,12 @@ export default function TimerControls() {
         onClick={reset}
         disabled={status === 'idle'}
       >
-        Reset
+        {t('timer.controls.reset')}
       </Button>
 
       {status === 'running' ? (
         <Button variant="contained" size="large" startIcon={<PauseCircle />} onClick={pause}>
-          Pause
+          {t('timer.controls.pause')}
         </Button>
       ) : status === 'countdown' ? (
         <Button
@@ -33,7 +35,7 @@ export default function TimerControls() {
           startIcon={<RestartAlt />}
           onClick={reset}
         >
-          Cancel
+          {t('timer.controls.cancel')}
         </Button>
       ) : (
         <Button
@@ -43,7 +45,11 @@ export default function TimerControls() {
           startIcon={<PlayCircle />}
           onClick={status === 'done' ? reset : start}
         >
-          {status === 'paused' ? 'Resume' : status === 'done' ? 'New' : 'Start'}
+          {status === 'paused'
+            ? t('timer.controls.resume')
+            : status === 'done'
+            ? t('timer.controls.new')
+            : t('timer.controls.start')}
         </Button>
       )}
     </Box>

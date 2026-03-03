@@ -22,12 +22,14 @@ import {
   ListItemText,
 } from '@mui/material'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 export default function Layout() {
   const navigate = useNavigate()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const { user } = useUser()
+  const { t, i18n } = useTranslation()
 
   const handleNavigate = (path: string) => {
     navigate(path)
@@ -49,8 +51,22 @@ export default function Layout() {
           >
             <FitnessCenter sx={{ mr: 1 }} />
             <Typography variant="h6" component="div" sx={{ textWrap: 'nowrap' }}>
-              Crossfit Logger
+              {t('layout.appName')}
             </Typography>
+          </Box>
+          <Box display="flex" gap={0.5}>
+            {(['en', 'uk'] as const).map((lang) => (
+              <Button
+                key={lang}
+                color="inherit"
+                size="small"
+                variant={i18n.language.startsWith(lang) ? 'outlined' : 'text'}
+                onClick={() => i18n.changeLanguage(lang)}
+                sx={{ minWidth: 36, px: 0.5 }}
+              >
+                {lang.toUpperCase()}
+              </Button>
+            ))}
           </Box>
         </Toolbar>
       </AppBar>
@@ -95,18 +111,18 @@ export default function Layout() {
             <SignedIn>
               <ListItem disablePadding>
                 <ListItemButton onClick={() => handleNavigate('/dashboard')}>
-                  <ListItemText primary="Dashboard" />
+                  <ListItemText primary={t('layout.nav.dashboard')} />
                 </ListItemButton>
               </ListItem>
               <ListItem disablePadding>
                 <ListItemButton onClick={() => handleNavigate('/exercises')}>
-                  <ListItemText primary="Exercises" />
+                  <ListItemText primary={t('layout.nav.exercises')} />
                 </ListItemButton>
               </ListItem>
             </SignedIn>
             <ListItem disablePadding>
               <ListItemButton onClick={() => handleNavigate('/timer')}>
-                <ListItemText primary="Timer" />
+                <ListItemText primary={t('layout.nav.timer')} />
               </ListItemButton>
             </ListItem>
           </List>
@@ -116,14 +132,14 @@ export default function Layout() {
               <ListItem>
                 <SignInButton mode="modal">
                   <Button fullWidth variant="contained">
-                    Sign In
+                    {t('auth.signIn')}
                   </Button>
                 </SignInButton>
               </ListItem>
               <ListItem>
                 <SignUpButton mode="modal">
                   <Button fullWidth variant="outlined">
-                    Sign Up
+                    {t('auth.signUp')}
                   </Button>
                 </SignUpButton>
               </ListItem>

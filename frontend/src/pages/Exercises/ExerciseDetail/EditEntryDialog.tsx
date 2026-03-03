@@ -7,6 +7,7 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import type { ExerciseMetric } from '../../../types/exercise'
 
 export interface EditEntryState {
@@ -37,6 +38,7 @@ export default function EditEntryDialog({
   onSubmit,
   onClose,
 }: EditEntryDialogProps) {
+  const { t } = useTranslation()
   const isReps = metric === 'reps'
 
   const isSubmitDisabled = isReps
@@ -51,42 +53,42 @@ export default function EditEntryDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Edit Entry</DialogTitle>
+      <DialogTitle>{t('exerciseDetail.editDialog.title')}</DialogTitle>
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={2} pt={1}>
           {!isReps && (
             <TextField
-              label="Weight (kg)"
+              label={t('exercises.form.weight')}
               type="number"
               value={editEntry?.weight ?? ''}
               onChange={(e) => onChange('weight', e.target.value)}
               required
               fullWidth
               slotProps={{ htmlInput: { min: 1, max: 300 } }}
-              helperText="1 – 300 kg"
+              helperText={t('exercises.form.weightHelper')}
             />
           )}
           <TextField
-            label="Reps"
+            label={t('exercises.form.reps')}
             type="number"
             value={editEntry?.reps ?? ''}
             onChange={(e) => onChange('reps', e.target.value)}
             required={isReps}
             fullWidth
             slotProps={{ htmlInput: { min: 1, max: 500 } }}
-            helperText="1 – 500"
+            helperText={t('exercises.form.repsHelper')}
           />
           <TextField
-            label="Sets"
+            label={t('exercises.form.sets')}
             type="number"
             value={editEntry?.sets ?? ''}
             onChange={(e) => onChange('sets', e.target.value)}
             fullWidth
             slotProps={{ htmlInput: { min: 1, max: 10 } }}
-            helperText="1 – 10"
+            helperText={t('exercises.form.setsHelper')}
           />
           <TextField
-            label="Notes"
+            label={t('exercises.form.notes')}
             value={editEntry?.notes ?? ''}
             onChange={(e) => onChange('notes', e.target.value)}
             multiline
@@ -96,7 +98,7 @@ export default function EditEntryDialog({
             helperText={`${(editEntry?.notes ?? '').length} / 300`}
           />
           <TextField
-            label="Date"
+            label={t('exercises.form.date')}
             type="date"
             value={editEntry?.date ?? ''}
             onChange={(e) => onChange('date', e.target.value)}
@@ -106,9 +108,9 @@ export default function EditEntryDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common.cancel')}</Button>
         <Button onClick={onSubmit} variant="contained" disabled={isSubmitDisabled}>
-          {isSaving ? 'Saving...' : 'Update'}
+          {isSaving ? t('common.saving') : t('exerciseDetail.editDialog.submit')}
         </Button>
       </DialogActions>
     </Dialog>

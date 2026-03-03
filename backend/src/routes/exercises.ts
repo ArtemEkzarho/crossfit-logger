@@ -49,13 +49,40 @@ router.get('/analytics/all', async (req, res: Response) => {
   }
 });
 
-// GET all exercises for a specific exercise name from all users (for analytics)
+// GET last 7 days of entries for a specific exercise from all users (for analytics)
+// Users with no entries in the last 7 days get their all-time max at today's date (isFallback: true)
 router.get('/analytics/:name', async (req, res: Response) => {
   try {
     const name = decodeURIComponent(req.params.name);
-    const exercises = await Exercise.find({ name }).sort({ updatedAt: -1 });
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const userIds = [...new Set(exercises.map((e) => e.userId))];
+    const allExercises = await Exercise.find({ name }).sort({ updatedAt: -1 });
+
+    type ExerciseData = { doc: typeof allExercises[0]; history: unknown[]; isFallback: boolean };
+
+    const exerciseData = allExercises
+      .map((e): ExerciseData | null => {
+        const recentHistory = e.weightHistory.filter((w) => w.date >= sevenDaysAgo);
+        if (recentHistory.length > 0) {
+          return { doc: e, history: recentHistory, isFallback: false };
+        }
+        if (e.weightHistory.length === 0) return null; // never logged — exclude
+        // All-time max: prefer weight, fall back to reps
+        const maxEntry = e.weightHistory.reduce((best, w) => {
+          const v = w.weight ?? w.reps ?? 0;
+          const bv = best.weight ?? best.reps ?? 0;
+          return v > bv ? w : best;
+        });
+        const { _id, weight, reps, sets, notes } = maxEntry;
+        return {
+          doc: e,
+          history: [{ _id, weight, reps, sets, notes, date: new Date() }],
+          isFallback: true,
+        };
+      })
+      .filter((x): x is ExerciseData => x !== null);
+
+    const userIds = [...new Set(exerciseData.map((e) => e.doc.userId))];
     const userNameMap = new Map<string, string>();
     await Promise.all(
       userIds.map(async (id) => {
@@ -69,9 +96,11 @@ router.get('/analytics/:name', async (req, res: Response) => {
       })
     );
 
-    const enriched = exercises.map((e) => ({
-      ...e.toObject(),
-      userName: userNameMap.get(e.userId) || 'Unknown',
+    const enriched = exerciseData.map(({ doc, history, isFallback }) => ({
+      ...doc.toObject(),
+      weightHistory: history,
+      userName: userNameMap.get(doc.userId) || 'Unknown',
+      isFallback,
     }));
 
     res.json(enriched);

@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ExerciseMetric } from '../../../types/exercise'
 
 const PERCENTAGES = [50, 55, 60, 65, 70, 75, 80, 85, 90]
@@ -32,12 +33,14 @@ export default function ExerciseDetailHeader({
   onLogWeight,
 }: ExerciseDetailHeaderProps) {
   const [open, setOpen] = useState(false)
-  const unit = metric === 'reps' ? 'reps' : 'kg'
+  const { t } = useTranslation()
+  const unit =
+    metric === 'reps' ? t('exerciseDetail.weightHistory.header.reps') : t('dashboard.unit.kg')
 
   return (
     <>
       <Button startIcon={<ArrowBack />} onClick={onBack} sx={{ mb: 2 }}>
-        Back to Exercises
+        {t('exerciseDetail.header.back')}
       </Button>
 
       <Box
@@ -61,14 +64,20 @@ export default function ExerciseDetailHeader({
                 {unit}
               </Typography>
               <Typography variant="body2" color="text.secondary" ml={1}>
-                personal best
+                {t('exerciseDetail.header.personalBest')}
               </Typography>
             </Box>
           )}
         </Box>
 
         <Box display="flex" gap={1} alignItems="center">
-          <Tooltip title={maxValue == null ? 'No PR yet' : '% of PR'}>
+          <Tooltip
+            title={
+              maxValue == null
+                ? t('exerciseDetail.header.noPR')
+                : t('exerciseDetail.header.percentOfPR')
+            }
+          >
             <span>
               <IconButton
                 onClick={() => setOpen(true)}
@@ -81,7 +90,7 @@ export default function ExerciseDetailHeader({
             </span>
           </Tooltip>
           <Button variant="contained" onClick={onLogWeight}>
-            Log Entry
+            {t('exerciseDetail.header.logEntry')}
           </Button>
         </Box>
       </Box>
@@ -89,7 +98,7 @@ export default function ExerciseDetailHeader({
       <Dialog open={open} onClose={() => setOpen(false)} fullScreen>
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            % of PR ({maxValue} {unit})
+            {t('exerciseDetail.header.prDialogTitle', { value: maxValue, unit })}
             <IconButton onClick={() => setOpen(false)}>
               <ArrowBack />
             </IconButton>

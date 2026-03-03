@@ -53,6 +53,7 @@ export interface Exercise {
   weightHistory: WeightEntry[]
   createdAt: string
   updatedAt: string
+  isFallback?: boolean  // true = no entries in last 7 days; weightHistory has all-time PR at today's date
 }
 
 export function getMaxValue(exercise: Exercise): number | undefined {

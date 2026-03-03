@@ -1,6 +1,7 @@
 import { Alert, Box, CircularProgress, Container, Divider, Snackbar, Typography } from '@mui/material'
 import type { SelectChangeEvent } from '@mui/material'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   useDeleteWeightEntry,
@@ -19,6 +20,7 @@ import WeightHistory from './ExerciseDetail/WeightHistory'
 export default function ExerciseDetail() {
   const { name } = useParams<{ name: string }>()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const decodedName = decodeURIComponent(name ?? '')
   const { data: exercise, isLoading, error } = useExercise(decodedName)
@@ -64,7 +66,7 @@ export default function ExerciseDetail() {
         notes: logFormData.notes || undefined,
         date: logFormData.date,
       })
-      showSnackbar('Entry logged', 'success')
+      showSnackbar(t('exerciseDetail.successLogged'), 'success')
       setLogFormOpen(false)
       setLogFormData({ ...emptyForm, name: decodedName as ExerciseName })
     } catch (err) {
@@ -100,7 +102,7 @@ export default function ExerciseDetail() {
     }
     try {
       await updateEntry.mutateAsync({ name: decodedName, entryId: editEntry.entryId, data })
-      showSnackbar('Entry updated', 'success')
+      showSnackbar(t('exerciseDetail.successUpdated'), 'success')
       setEditEntry(null)
     } catch (err) {
       showSnackbar(err instanceof Error ? err.message : 'An error occurred', 'error')
@@ -111,7 +113,7 @@ export default function ExerciseDetail() {
     if (!deleteEntryId) return
     try {
       await deleteEntry.mutateAsync({ name: decodedName, entryId: deleteEntryId })
-      showSnackbar('Entry deleted', 'success')
+      showSnackbar(t('exerciseDetail.successDeleted'), 'success')
       setDeleteEntryId(null)
     } catch (err) {
       showSnackbar(err instanceof Error ? err.message : 'An error occurred', 'error')
@@ -140,7 +142,7 @@ export default function ExerciseDetail() {
             onLogWeight={() => {}}
           />
           <Alert severity="error">
-            {error instanceof Error ? error.message : 'Exercise not found'}
+            {error instanceof Error ? error.message : t('exerciseDetail.notFound')}
           </Alert>
         </Box>
       </Container>
@@ -170,7 +172,7 @@ export default function ExerciseDetail() {
         <Divider sx={{ mb: 3 }} />
 
         <Typography variant="h5" gutterBottom>
-          History
+          {t('exerciseDetail.history')}
         </Typography>
 
         <WeightHistory

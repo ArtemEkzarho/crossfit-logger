@@ -1,6 +1,7 @@
 import { Box, Container, Tab, Tabs, Typography } from '@mui/material'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { playCountdown, playDone, playTransition } from './timerAudio'
 import {
   audioSignalAtom,
@@ -16,12 +17,6 @@ import TimerControls from './TimerControls'
 import TimerDisplay from './TimerDisplay'
 
 const MODES: Mode[] = ['AMRAP', 'EMOM', 'ForTime', 'Tabata']
-const MODE_LABELS: Record<Mode, string> = {
-  AMRAP: 'AMRAP',
-  EMOM: 'EMOM',
-  ForTime: 'For Time',
-  Tabata: 'Tabata',
-}
 
 export default function Timer() {
   const status = useAtomValue(statusAtom)
@@ -30,6 +25,14 @@ export default function Timer() {
   const audioSignal = useAtomValue(audioSignalAtom)
   const tick = useSetAtom(tickAtom)
   const setMode = useSetAtom(setModeAtom)
+  const { t } = useTranslation()
+
+  const MODE_LABELS: Record<Mode, string> = {
+    AMRAP: t('timer.mode.amrap'),
+    EMOM: t('timer.mode.emom'),
+    ForTime: t('timer.mode.forTime'),
+    Tabata: t('timer.mode.tabata'),
+  }
 
   // Interval — runs during pre-start countdown and actual timer
   useEffect(() => {
@@ -50,10 +53,10 @@ export default function Timer() {
     <Container maxWidth="sm">
       <Box my={4}>
         <Typography variant="h3" component="h1" gutterBottom>
-          Timer
+          {t('timer.title')}
         </Typography>
         <Typography variant="body1" color="text.secondary" mb={3}>
-          crossfit interval timer
+          {t('timer.subtitle')}
         </Typography>
 
         <Tabs

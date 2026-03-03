@@ -1,5 +1,6 @@
 import { Box, Paper, TextField, Typography } from '@mui/material'
 import { useAtom, useAtomValue } from 'jotai'
+import { useTranslation } from 'react-i18next'
 import {
   durationMinAtom,
   isActiveAtom,
@@ -49,48 +50,49 @@ export default function TimerConfig() {
   const [tabataWork, setTabataWork] = useAtom(tabataWorkAtom)
   const [tabataRest, setTabataRest] = useAtom(tabataRestAtom)
   const [tabataRounds, setTabataRounds] = useAtom(tabataRoundsAtom)
+  const { t } = useTranslation()
 
   return (
     <Paper sx={{ p: 3, mb: 3 }}>
       {mode === 'ForTime' ? (
         <Typography variant="body2" color="text.secondary">
-          Press Start and stop when you finish.
+          {t('timer.config.forTimeHint')}
         </Typography>
       ) : mode === 'Tabata' ? (
         <Box display="flex" gap={2} flexWrap="wrap">
           <ConfigField
-            label="Work (sec)"
+            label={t('timer.config.work')}
             value={tabataWork}
             onChange={setTabataWork}
             min={5}
             max={300}
-            helperText="5 – 300 s"
+            helperText={t('timer.config.workHelper')}
           />
           <ConfigField
-            label="Rest (sec)"
+            label={t('timer.config.rest')}
             value={tabataRest}
             onChange={setTabataRest}
             min={1}
             max={300}
-            helperText="1 – 300 s"
+            helperText={t('timer.config.restHelper')}
           />
           <ConfigField
-            label="Rounds"
+            label={t('timer.config.rounds')}
             value={tabataRounds}
             onChange={setTabataRounds}
             min={1}
             max={50}
-            helperText="1 – 50"
+            helperText={t('timer.config.roundsHelper')}
           />
         </Box>
       ) : (
         <ConfigField
-          label="Duration (min)"
+          label={t('timer.config.duration')}
           value={durationMin}
           onChange={setDurationMin}
           min={1}
           max={120}
-          helperText="1 – 120 min"
+          helperText={t('timer.config.durationHelper')}
         />
       )}
     </Paper>

@@ -1,0 +1,154 @@
+{
+  "common": {
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "saving": "Збереження...",
+    "deleting": "Видалення..."
+  },
+  "auth": {
+    "signIn": "Увійти",
+    "signUp": "Зареєструватись"
+  },
+  "layout": {
+    "appName": "Crossfit Logger",
+    "nav": {
+      "dashboard": "Дашборд",
+      "exercises": "Вправи",
+      "timer": "Таймер"
+    }
+  },
+  "home": {
+    "title": "Ласкаво просимо до Crossfit Logger",
+    "subtitle": "Відстежуйте тренування, моніторте прогрес і досягайте своїх фітнес-цілей.",
+    "goDashboard": "Перейти до дашборду",
+    "features": "Можливості",
+    "feature": {
+      "trackWorkouts": "Запис тренувань",
+      "trackWorkoutsDesc": "Легко записуйте свої CrossFit WOD, підйоми та кардіо-сесії.",
+      "monitorProgress": "Моніторинг прогресу",
+      "monitorProgressDesc": "Переглядайте своє покращення з часом за допомогою графіків і статистики.",
+      "setGoals": "Постановка цілей",
+      "setGoalsDesc": "Визначте та відстежуйте свої фітнес-цілі, щоб залишатися мотивованим."
+    }
+  },
+  "dashboard": {
+    "title": "Аналітика",
+    "subtitle": "Максимальний прогрес на користувача",
+    "metricReps": "Макс. повторення",
+    "metricWeight": "Макс. вага (кг)",
+    "unit": {
+      "reps": " повт.",
+      "kg": " кг"
+    },
+    "prNote": "* Пунктирна лінія — рекорд за весь час (немає записів за останні 7 днів)",
+    "noData": "Немає даних",
+    "error": "Помилка завантаження аналітики: {{message}}"
+  },
+  "exercises": {
+    "title": "Вправи",
+    "subtitle": "Відстежуйте та керуйте своїми вправами.",
+    "successLogged": "Вагу успішно записано",
+    "error": "Помилка завантаження вправ: {{message}}",
+    "form": {
+      "title": "Новий запис",
+      "name": "Назва вправи",
+      "weight": "Вага (кг)",
+      "weightHelper": "1 – 300 кг",
+      "reps": "Повторення",
+      "repsHelper": "1 – 500",
+      "sets": "Підходи",
+      "setsHelper": "1 – 10",
+      "notes": "Нотатки",
+      "date": "Дата",
+      "submit": "Записати"
+    },
+    "table": {
+      "empty": "Вправ ще немає",
+      "emptyDesc": "Почніть відстежувати тренування, записавши перший запис.",
+      "logEntry": "Записати",
+      "header": {
+        "exercise": "Вправа",
+        "best": "Рекорд",
+        "entries": "Записи",
+        "lastLogged": "Останній запис"
+      }
+    },
+    "deleteDialog": {
+      "title": "Видалити вправу",
+      "confirm": "Ви впевнені, що хочете видалити «{{name}}»? Цю дію неможливо скасувати."
+    }
+  },
+  "exerciseDetail": {
+    "successLogged": "Запис додано",
+    "successUpdated": "Запис оновлено",
+    "successDeleted": "Запис видалено",
+    "notFound": "Вправу не знайдено",
+    "history": "Історія",
+    "header": {
+      "back": "До вправ",
+      "personalBest": "особистий рекорд",
+      "noPR": "Рекорду ще немає",
+      "percentOfPR": "% від рекорду",
+      "logEntry": "Новий запис",
+      "prDialogTitle": "% від рекорду ({{value}} {{unit}})"
+    },
+    "weightHistory": {
+      "empty": "Записів ще немає. Додайте перший запис!",
+      "pr": "ОР",
+      "header": {
+        "date": "Дата",
+        "weight": "Вага (кг)",
+        "reps": "Повтор",
+        "sets": "Підходи",
+        "notes": "Нотатки",
+        "actions": "Дії"
+      }
+    },
+    "editDialog": {
+      "title": "Редагувати запис",
+      "submit": "Оновити"
+    },
+    "deleteDialog": {
+      "title": "Видалити запис",
+      "confirm": "Ви впевнені, що хочете видалити цей запис?"
+    }
+  },
+  "timer": {
+    "title": "Таймер",
+    "subtitle": "таймер для CrossFit",
+    "mode": {
+      "amrap": "AMRAP",
+      "emom": "EMOM",
+      "forTime": "На час",
+      "tabata": "Табата"
+    },
+    "config": {
+      "forTimeHint": "Натисніть Старт і зупиніться, коли закінчите.",
+      "work": "Робота (сек)",
+      "workHelper": "5 – 300 с",
+      "rest": "Відпочинок (сек)",
+      "restHelper": "1 – 300 с",
+      "rounds": "Раунди",
+      "roundsHelper": "1 – 50",
+      "duration": "Тривалість (хв)",
+      "durationHelper": "1 – 120 хв"
+    },
+    "display": {
+      "getReady": "Готуйтесь!",
+      "work": "РОБОТА",
+      "rest": "ВІДПОЧИНОК",
+      "done": "Готово!",
+      "minute": "Хвилина {{current}} / {{total}}",
+      "round": "Раунд {{current}} / {{total}}"
+    },
+    "controls": {
+      "reset": "Скинути",
+      "pause": "Пауза",
+      "cancel": "Скасувати",
+      "resume": "Продовжити",
+      "start": "Старт",
+      "new": "Новий"
+    }
+  }
+}
