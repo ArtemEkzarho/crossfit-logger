@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   deleteExercise,
   deleteWeightEntry,
-  getAllExercisesForAnalytics,
   getExerciseAnalytics,
   getExerciseByName,
   getExercises,
@@ -25,28 +24,15 @@ export function useExercises() {
   })
 }
 
-export function useAllExercisesForAnalytics() {
+export function useExerciseAnalytics(name: ExerciseName, days: number) {
   const { getToken } = useAuth()
 
   return useQuery({
-    queryKey: ['exercises', 'analytics', 'all'],
+    queryKey: ['exercises', 'analytics', name, days],
     queryFn: async () => {
       const token = await getToken()
       if (!token) throw new Error('Not authenticated')
-      return getAllExercisesForAnalytics(token)
-    },
-  })
-}
-
-export function useExerciseAnalytics(name: ExerciseName) {
-  const { getToken } = useAuth()
-
-  return useQuery({
-    queryKey: ['exercises', 'analytics', name],
-    queryFn: async () => {
-      const token = await getToken()
-      if (!token) throw new Error('Not authenticated')
-      return getExerciseAnalytics(name, token)
+      return getExerciseAnalytics(name, token, days)
     },
     staleTime: 60 * 1000, // 1 minute — no refetch when switching back to a cached exercise
   })
