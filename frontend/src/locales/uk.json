@@ -123,13 +123,6 @@
   },
   "timer": {
     "title": "Таймер",
-    "subtitle": "таймер для CrossFit",
-    "mode": {
-      "amrap": "AMRAP",
-      "emom": "EMOM",
-      "forTime": "На час",
-      "tabata": "Табата"
-    },
     "config": {
       "forTimeHint": "Натисніть Старт і зупиніться, коли закінчите.",
       "work": "Робота (сек)",
