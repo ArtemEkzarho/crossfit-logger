@@ -1,4 +1,4 @@
-import { Box, Paper, TextField, Typography } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import { useAtom, useAtomValue } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import {
@@ -53,7 +53,7 @@ export default function TimerConfig() {
   const { t } = useTranslation()
 
   return (
-    <Paper sx={{ p: 3, mb: 3 }}>
+    <Box mb={2}>
       {mode === 'ForTime' ? (
         <Typography variant="body2" color="text.secondary">
           {t('timer.config.forTimeHint')}
@@ -95,6 +95,6 @@ export default function TimerConfig() {
           helperText={t('timer.config.durationHelper')}
         />
       )}
-    </Paper>
+    </Box>
   )
 }

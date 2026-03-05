@@ -123,13 +123,6 @@
   },
   "timer": {
     "title": "Timer",
-    "subtitle": "crossfit interval timer",
-    "mode": {
-      "amrap": "AMRAP",
-      "emom": "EMOM",
-      "forTime": "For Time",
-      "tabata": "Tabata"
-    },
     "config": {
       "forTimeHint": "Press Start and stop when you finish.",
       "work": "Work (sec)",
