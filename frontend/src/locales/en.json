@@ -41,6 +41,7 @@
       "reps": " reps",
       "kg": " kg"
     },
+    "weeklyNote": "* Each point shows the best result for that week",
     "prNote": "* Dashed line — all-time PR (no entries in the selected period)",
     "noData": "No data available",
     "error": "Failed to load analytics: {{message}}",

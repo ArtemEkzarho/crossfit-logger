@@ -73,8 +73,13 @@ export default function AnalyticsChart() {
           })}
         </LineChart>
       </ResponsiveContainer>
-      {fallbackUsers.size > 0 && (
+      {period >= 30 && (
         <Typography variant="caption" color="text.secondary" mt={1} display="block">
+          {t('dashboard.weeklyNote')}
+        </Typography>
+      )}
+      {fallbackUsers.size > 0 && (
+        <Typography variant="caption" color="text.secondary" mt={0.5} display="block">
           {t('dashboard.prNote')}
         </Typography>
       )}

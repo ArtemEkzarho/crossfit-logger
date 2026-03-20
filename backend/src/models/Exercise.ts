@@ -2,18 +2,35 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 
 // Allowed exercise names - extend this list as needed
 export const EXERCISE_NAMES = [
+  // Barbell — weight
   'Deadlift',
   'Power Clean',
+  'Squat Clean',
+  'Clean and Jerk',
+  'Hang Power Clean',
   'Bench Press',
   'Front Squat',
   'Back Squat',
+  'Overhead Squat',
   'Push Press',
   'Strict Press',
-  'Overhead Squat',
+  'Thruster',
   'Power Snatch',
+  'Hang Power Snatch',
+  'Snatch',
   'Back Lunges',
+  // Bodyweight — reps
   'Push Up',
   'Pull Up',
+  'Handstand Push Up',
+  'Muscle Up',
+  'Ring Dip',
+  'Toes to Bar',
+  'Sit Up',
+  'Air Squat',
+  'Burpee',
+  'Box Jump',
+  'Double Under',
 ] as const;
 export type ExerciseName = typeof EXERCISE_NAMES[number];
 
