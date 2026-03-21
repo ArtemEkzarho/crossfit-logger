@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { clerkMiddleware } from '@clerk/express';
 import dotenv from 'dotenv';
-import exerciseRoutes from './routes/exercises'; 
+import exerciseRoutes from './routes/exercises';
+import wodRoutes from './routes/wods';
 
 dotenv.config({ path: '.env.local' });
 
@@ -54,7 +55,8 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // API Routes
-app.use('/api/exercises', exerciseRoutes);  // ← ADD THIS
+app.use('/api/exercises', exerciseRoutes);
+app.use('/api/wods', wodRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

@@ -15,6 +15,7 @@
     "nav": {
       "dashboard": "Дашборд",
       "exercises": "Вправи",
+      "wods": "WOD",
       "timer": "Таймер"
     }
   },
@@ -120,6 +121,63 @@
     "deleteDialog": {
       "title": "Видалити запис",
       "confirm": "Ви впевнені, що хочете видалити цей запис?"
+    }
+  },
+  "wods": {
+    "title": "WOD",
+    "subtitle": "Записуйте та відстежуйте тренування дня.",
+    "successLogged": "WOD успішно записано",
+    "successDeleted": "WOD видалено",
+    "empty": "WOD ще немає",
+    "emptyDesc": "Запишіть своє перше тренування дня.",
+    "error": "Помилка завантаження WOD: {{message}}",
+    "types": {
+      "forTime": "For Time",
+      "amrap": "AMRAP",
+      "emom": "EMOM",
+      "tabata": "Tabata",
+      "custom": "Custom"
+    },
+    "form": {
+      "title": "Записати WOD",
+      "wodName": "Назва WOD (необов'язково)",
+      "date": "Дата",
+      "type": "Тип",
+      "movements": "Рухи",
+      "addMovement": "Додати рух",
+      "movement": {
+        "name": "Рух",
+        "reps": "Повторення",
+        "weight": "Вага (кг)"
+      },
+      "result": "Результат",
+      "timeMinutes": "Хвилини",
+      "timeSeconds": "Секунди",
+      "rounds": "Раунди",
+      "reps": "Повторення (неповний раунд)",
+      "totalReps": "Всього повторень",
+      "rxd": "Rx'd",
+      "notes": "Нотатки",
+      "submit": "Записати WOD"
+    },
+    "card": {
+      "rxd": "Rx'd",
+      "result": "Результат"
+    },
+    "results": {
+      "title": "Результати",
+      "empty": "Результатів ще немає. Будьте першим!",
+      "add": "Додати свій результат",
+      "successAdded": "Результат додано",
+      "successDeleted": "Результат видалено",
+      "dialog": {
+        "title": "Додати результат",
+        "submit": "Зберегти результат"
+      }
+    },
+    "deleteDialog": {
+      "title": "Видалити WOD",
+      "confirm": "Ви впевнені, що хочете видалити цей WOD? Цю дію неможливо скасувати."
     }
   },
   "timer": {
