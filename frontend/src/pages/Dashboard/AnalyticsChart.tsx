@@ -12,7 +12,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { useExerciseAnalytics } from '../../hooks/useExercises'
+import { useExerciseAnalytics } from '../../api/hooks/useExercises'
 import { periodAtom, selectedExerciseAtom } from './atoms'
 import { buildChartData, EMPTY_CHART_DATA } from './buildChartData'
 import { USER_COLORS } from './userColors'

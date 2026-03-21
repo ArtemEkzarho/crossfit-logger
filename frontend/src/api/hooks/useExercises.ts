@@ -1,5 +1,6 @@
 import { useAuth } from '@clerk/clerk-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { ExerciseName, LogWeightData, UpdateWeightEntryData } from '../../types/exercise'
 import {
   deleteExercise,
   deleteWeightEntry,
@@ -8,8 +9,7 @@ import {
   getExercises,
   logWeight,
   updateWeightEntry,
-} from '../api/exercises'
-import type { ExerciseName, LogWeightData, UpdateWeightEntryData } from '../types/exercise'
+} from '../exercises'
 
 export function useExercises() {
   const { getToken } = useAuth()

@@ -1,4 +1,12 @@
-import { Alert, Box, CircularProgress, Container, Divider, Snackbar, Typography } from '@mui/material'
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Container,
+  Divider,
+  Snackbar,
+  Typography,
+} from '@mui/material'
 import type { SelectChangeEvent } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8,18 +16,20 @@ import {
   useExercise,
   useLogWeight,
   useUpdateWeightEntry,
-} from '../../hooks/useExercises'
+} from '../../api/hooks/useExercises'
+import { useLocalePath } from '../../hooks/useLocalePath'
 import type { ExerciseName, UpdateWeightEntryData, WeightEntry } from '../../types/exercise'
 import { getExerciseMetric, getMaxValue } from '../../types/exercise'
-import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
 import DeleteEntryDialog from './ExerciseDetail/DeleteEntryDialog'
 import EditEntryDialog, { type EditEntryState } from './ExerciseDetail/EditEntryDialog'
 import ExerciseDetailHeader from './ExerciseDetail/ExerciseDetailHeader'
 import WeightHistory from './ExerciseDetail/WeightHistory'
+import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
 
 export default function ExerciseDetail() {
   const { name } = useParams<{ name: string }>()
   const navigate = useNavigate()
+  const localePath = useLocalePath()
   const { t } = useTranslation()
 
   const decodedName = decodeURIComponent(name ?? '')
@@ -85,10 +95,8 @@ export default function ExerciseDetail() {
     })
   }
 
-  const handleEditChange = (
-    field: keyof Omit<EditEntryState, 'entryId'>,
-    value: string
-  ) => setEditEntry((prev) => prev && { ...prev, [field]: value })
+  const handleEditChange = (field: keyof Omit<EditEntryState, 'entryId'>, value: string) =>
+    setEditEntry((prev) => prev && { ...prev, [field]: value })
 
   const handleEditSubmit = async () => {
     if (!editEntry) return
@@ -138,7 +146,7 @@ export default function ExerciseDetail() {
             name={decodedName}
             maxValue={undefined}
             metric="weight"
-            onBack={() => navigate('/exercises')}
+            onBack={() => navigate(localePath('/exercises'))}
             onLogWeight={() => {}}
           />
           <Alert severity="error">
@@ -162,7 +170,7 @@ export default function ExerciseDetail() {
           name={exercise.name}
           maxValue={maxValue}
           metric={metric}
-          onBack={() => navigate('/exercises')}
+          onBack={() => navigate(localePath('/exercises'))}
           onLogWeight={() => {
             setLogFormData({ ...emptyForm, name: decodedName as ExerciseName })
             setLogFormOpen(true)
