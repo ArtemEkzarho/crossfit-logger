@@ -3,10 +3,12 @@ import { SignInButton, SignUpButton, SignedOut, SignedIn } from '@clerk/clerk-re
 import { useNavigate } from 'react-router-dom'
 import { FitnessCenter } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import { useLocalePath } from '../hooks/useLocalePath'
 
 export default function Home() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const localePath = useLocalePath()
 
   return (
     <Container maxWidth="md">
@@ -39,7 +41,7 @@ export default function Home() {
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(localePath('/dashboard'))}
             >
               {t('home.goDashboard')}
             </Button>

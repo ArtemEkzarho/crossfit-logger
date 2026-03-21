@@ -4,7 +4,7 @@ import type { SelectChangeEvent } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { useExercises, useLogWeight } from '../../hooks/useExercises'
+import { useExercises, useLogWeight } from '../../api/hooks/useExercises'
 import type { ExerciseName } from '../../types/exercise'
 import { getExerciseMetric } from '../../types/exercise'
 import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
@@ -76,12 +76,7 @@ export default function Exercises() {
   if (isLoading) {
     return (
       <Container maxWidth="lg">
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="50vh"
-        >
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
           <CircularProgress />
         </Box>
       </Container>
@@ -93,7 +88,9 @@ export default function Exercises() {
       <Container maxWidth="lg">
         <Box my={4}>
           <Alert severity="error">
-            {t('exercises.error', { message: error instanceof Error ? error.message : 'Unknown error' })}
+            {t('exercises.error', {
+              message: error instanceof Error ? error.message : 'Unknown error',
+            })}
           </Alert>
         </Box>
       </Container>

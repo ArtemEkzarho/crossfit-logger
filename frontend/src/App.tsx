@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import LocaleWrapper from './components/LocaleWrapper'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
@@ -11,33 +12,36 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/timer" element={<Timer />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/exercises"
-            element={
-              <ProtectedRoute>
-                <Exercises />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/exercises/:name"
-            element={
-              <ProtectedRoute>
-                <ExerciseDetail />
-              </ProtectedRoute>
-            }
-          />
+        <Route path="/" element={<Navigate to="/en" replace />} />
+        <Route path="/:locale" element={<LocaleWrapper />}>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="timer" element={<Timer />} />
+            <Route
+              path="dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="exercises"
+              element={
+                <ProtectedRoute>
+                  <Exercises />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="exercises/:name"
+              element={
+                <ProtectedRoute>
+                  <ExerciseDetail />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
