@@ -1,14 +1,12 @@
 import { Container, Typography, Box, Button, Card, CardContent } from '@mui/material'
 import { SignInButton, SignUpButton, SignedOut, SignedIn } from '@clerk/clerk-react'
-import { useNavigate } from 'react-router-dom'
 import { FitnessCenter } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
-import { useLocalePath } from '../hooks/useLocalePath'
+import { useAppNavigation } from '../hooks/useAppNavigation'
 
 export default function Home() {
-  const navigate = useNavigate()
   const { t } = useTranslation()
-  const localePath = useLocalePath()
+  const { goTo, localePath } = useAppNavigation()
 
   return (
     <Container maxWidth="md">
@@ -41,7 +39,7 @@ export default function Home() {
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate(localePath('/dashboard'))}
+              onClick={() => goTo(localePath('/dashboard'))}
             >
               {t('home.goDashboard')}
             </Button>

@@ -76,6 +76,11 @@ export default function NavDrawer({ open, onClose }: NavDrawerProps) {
                 <ListItemText primary={t('layout.nav.exercises')} />
               </ListItemButton>
             </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => goTo(localePath('/wods'))}>
+                <ListItemText primary={t('layout.nav.wods')} />
+              </ListItemButton>
+            </ListItem>
           </SignedIn>
           <ListItem disablePadding>
             <ListItemButton onClick={() => goTo(localePath('/timer'))}>

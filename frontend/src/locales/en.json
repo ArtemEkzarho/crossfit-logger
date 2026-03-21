@@ -15,6 +15,7 @@
     "nav": {
       "dashboard": "Dashboard",
       "exercises": "Exercises",
+      "wods": "WODs",
       "timer": "Timer"
     }
   },
@@ -120,6 +121,63 @@
     "deleteDialog": {
       "title": "Delete Entry",
       "confirm": "Are you sure you want to delete this weight entry?"
+    }
+  },
+  "wods": {
+    "title": "WODs",
+    "subtitle": "Log and track your workouts of the day.",
+    "successLogged": "WOD logged successfully",
+    "successDeleted": "WOD deleted",
+    "empty": "No WODs yet",
+    "emptyDesc": "Log your first workout of the day.",
+    "error": "Failed to load WODs: {{message}}",
+    "types": {
+      "forTime": "For Time",
+      "amrap": "AMRAP",
+      "emom": "EMOM",
+      "tabata": "Tabata",
+      "custom": "Custom"
+    },
+    "form": {
+      "title": "Log WOD",
+      "wodName": "WOD Name (optional)",
+      "date": "Date",
+      "type": "Type",
+      "movements": "Movements",
+      "addMovement": "Add Movement",
+      "movement": {
+        "name": "Movement",
+        "reps": "Reps",
+        "weight": "Weight (kg)"
+      },
+      "result": "Result",
+      "timeMinutes": "Minutes",
+      "timeSeconds": "Seconds",
+      "rounds": "Rounds",
+      "reps": "Reps (partial)",
+      "totalReps": "Total Reps",
+      "rxd": "Rx'd",
+      "notes": "Notes",
+      "submit": "Log WOD"
+    },
+    "card": {
+      "rxd": "Rx'd",
+      "result": "Result"
+    },
+    "results": {
+      "title": "Results",
+      "empty": "No results yet. Be the first!",
+      "add": "Add My Result",
+      "successAdded": "Result added",
+      "successDeleted": "Result deleted",
+      "dialog": {
+        "title": "Add Result",
+        "submit": "Save Result"
+      }
+    },
+    "deleteDialog": {
+      "title": "Delete WOD",
+      "confirm": "Are you sure you want to delete this WOD? This action cannot be undone."
     }
   },
   "timer": {

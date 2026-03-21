@@ -10,14 +10,14 @@ import {
 import type { SelectChangeEvent } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import {
   useDeleteWeightEntry,
   useExercise,
   useLogWeight,
   useUpdateWeightEntry,
 } from '../../api/hooks/useExercises'
-import { useLocalePath } from '../../hooks/useLocalePath'
+import { useAppNavigation } from '../../hooks/useAppNavigation'
 import type { ExerciseName, UpdateWeightEntryData, WeightEntry } from '../../types/exercise'
 import { getExerciseMetric, getMaxValue } from '../../types/exercise'
 import DeleteEntryDialog from './ExerciseDetail/DeleteEntryDialog'
@@ -28,8 +28,7 @@ import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './Exercise
 
 export default function ExerciseDetail() {
   const { name } = useParams<{ name: string }>()
-  const navigate = useNavigate()
-  const localePath = useLocalePath()
+  const { goTo, localePath } = useAppNavigation()
   const { t } = useTranslation()
 
   const decodedName = decodeURIComponent(name ?? '')
@@ -146,7 +145,7 @@ export default function ExerciseDetail() {
             name={decodedName}
             maxValue={undefined}
             metric="weight"
-            onBack={() => navigate(localePath('/exercises'))}
+            onBack={() => goTo(localePath('/exercises'))}
             onLogWeight={() => {}}
           />
           <Alert severity="error">
@@ -170,7 +169,7 @@ export default function ExerciseDetail() {
           name={exercise.name}
           maxValue={maxValue}
           metric={metric}
-          onBack={() => navigate(localePath('/exercises'))}
+          onBack={() => goTo(localePath('/exercises'))}
           onLogWeight={() => {
             setLogFormData({ ...emptyForm, name: decodedName as ExerciseName })
             setLogFormOpen(true)

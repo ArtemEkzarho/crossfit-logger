@@ -3,15 +3,15 @@ import { Alert, Box, CircularProgress, Container, Fab, Snackbar, Typography } fr
 import type { SelectChangeEvent } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 import { useExercises, useLogWeight } from '../../api/hooks/useExercises'
+import { useAppNavigation } from '../../hooks/useAppNavigation'
 import type { ExerciseName } from '../../types/exercise'
 import { getExerciseMetric } from '../../types/exercise'
 import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
 import ExercisesTable from './ExercisesTable'
 
 export default function Exercises() {
-  const navigate = useNavigate()
+  const { goTo, localePath } = useAppNavigation()
   const { data: exercises, isLoading, error } = useExercises()
   const logWeight = useLogWeight()
   const { t } = useTranslation()
@@ -109,7 +109,7 @@ export default function Exercises() {
 
         <ExercisesTable
           exercises={exercises ?? []}
-          onNavigate={(name) => navigate(`/exercises/${encodeURIComponent(name)}`)}
+          onNavigate={(name) => goTo(localePath(`/exercises/${encodeURIComponent(name)}`))}
           onCreate={handleOpenCreate}
         />
 
