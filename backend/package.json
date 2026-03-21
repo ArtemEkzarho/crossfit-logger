@@ -11,19 +11,19 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.32.1",
   "dependencies": {
-    "@clerk/express": "^1.7.67",
+    "@clerk/express": "^2.0.6",
     "cors": "^2.8.6",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "mongoose": "^9.1.5"
+    "mongoose": "^9.3.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.2.0",
-    "nodemon": "^3.1.11",
+    "@types/node": "^25.5.0",
+    "nodemon": "^3.1.14",
     "ts-node-dev": "^2.0.0",
     "typescript": "~5.9.3"
   }
