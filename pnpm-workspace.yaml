@@ -1,6 +1,5 @@
 packages:
   - frontend
-  - backend
 
 onlyBuiltDependencies:
   - '@clerk/shared'
