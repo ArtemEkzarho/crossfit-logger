@@ -1,6 +1,6 @@
 FROM node:22.13.0-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g pnpm
 
 WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
