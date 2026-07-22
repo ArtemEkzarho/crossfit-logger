@@ -60,7 +60,11 @@ export default function WeightHistory({
           const primaryValue = isReps ? entry.reps : entry.weight
           const isPR = primaryValue != null && primaryValue === maxValue
           return (
-            <Card key={entry._id}>
+            <Card
+              key={entry._id}
+              onClick={() => onEdit(entry)}
+              sx={{ cursor: 'pointer' }}
+            >
               <CardContent sx={{ pb: '12px !important' }}>
                 <Box display="flex" justifyContent="space-between" alignItems="flex-start">
                   <Box>
@@ -112,12 +116,25 @@ export default function WeightHistory({
                   </Box>
                   <Box>
                     <Tooltip title={t('common.edit')}>
-                      <IconButton size="small" onClick={() => onEdit(entry)}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onEdit(entry)
+                        }}
+                      >
                         <Edit fontSize="small" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title={t('common.delete')}>
-                      <IconButton size="small" color="error" onClick={() => onDelete(entry._id)}>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onDelete(entry._id)
+                        }}
+                      >
                         <Delete fontSize="small" />
                       </IconButton>
                     </Tooltip>
@@ -155,7 +172,12 @@ export default function WeightHistory({
             const primaryValue = isReps ? entry.reps : entry.weight
             const isPR = primaryValue != null && primaryValue === maxValue
             return (
-              <TableRow key={entry._id} hover>
+              <TableRow
+                key={entry._id}
+                hover
+                onClick={() => onEdit(entry)}
+                sx={{ cursor: 'pointer' }}
+              >
                 <TableCell>{formatDate(entry.date)}</TableCell>
                 <TableCell align="right">
                   <Box display="flex" alignItems="center" justifyContent="flex-end" gap={1}>
@@ -176,12 +198,25 @@ export default function WeightHistory({
                 </TableCell>
                 <TableCell align="center">
                   <Tooltip title={t('common.edit')}>
-                    <IconButton size="small" onClick={() => onEdit(entry)}>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onEdit(entry)
+                      }}
+                    >
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title={t('common.delete')}>
-                    <IconButton size="small" color="error" onClick={() => onDelete(entry._id)}>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDelete(entry._id)
+                      }}
+                    >
                       <Delete fontSize="small" />
                     </IconButton>
                   </Tooltip>

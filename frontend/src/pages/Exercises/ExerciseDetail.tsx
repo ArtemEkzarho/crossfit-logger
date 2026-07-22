@@ -207,6 +207,7 @@ export default function ExerciseDetail() {
         editEntry={editEntry}
         isSaving={updateEntry.isPending}
         metric={metric}
+        maxValue={maxValue}
         onChange={handleEditChange}
         onSubmit={handleEditSubmit}
         onClose={() => setEditEntry(null)}

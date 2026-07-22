@@ -64,6 +64,8 @@
       "name": "Exercise Name",
       "weight": "Weight (kg)",
       "weightHelper": "1 – 300 kg",
+      "weightPercent": "% of Max",
+      "weightPercentHelper": "% of your personal best",
       "reps": "Reps",
       "repsHelper": "1 – 500",
       "sets": "Sets",

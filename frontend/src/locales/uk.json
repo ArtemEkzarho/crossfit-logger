@@ -64,6 +64,8 @@
       "name": "Назва вправи",
       "weight": "Вага (кг)",
       "weightHelper": "1 – 300 кг",
+      "weightPercent": "% від рекорду",
+      "weightPercentHelper": "% від вашого особистого рекорду",
       "reps": "Повторення",
       "repsHelper": "1 – 500",
       "sets": "Підходи",

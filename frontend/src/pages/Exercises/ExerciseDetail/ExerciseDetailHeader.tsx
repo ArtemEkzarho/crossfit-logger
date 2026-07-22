@@ -15,7 +15,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ExerciseMetric } from '../../../types/exercise'
 
-const PERCENTAGES = [50, 55, 60, 65, 70, 75, 80, 85, 90]
+const PERCENTAGES = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95]
 
 interface ExerciseDetailHeaderProps {
   name: string
