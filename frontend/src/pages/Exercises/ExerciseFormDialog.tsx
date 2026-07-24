@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -10,6 +9,7 @@ import {
   MenuItem,
   Select,
   type SelectChangeEvent,
+  Stack,
   TextField,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -75,7 +75,7 @@ export default function ExerciseFormDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('exercises.form.title')}</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} pt={1}>
+        <Stack spacing={2} sx={{ pt: 1 }}>
           <FormControl fullWidth required>
             <InputLabel id="exercise-name-label">{t('exercises.form.name')}</InputLabel>
             <Select
@@ -141,7 +141,7 @@ export default function ExerciseFormDialog({
             fullWidth
             slotProps={{ inputLabel: { shrink: true } }}
           />
-        </Box>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{t('common.cancel')}</Button>

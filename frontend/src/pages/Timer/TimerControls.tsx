@@ -1,5 +1,5 @@
 import { PauseCircle, PlayCircle, RestartAlt } from '@mui/icons-material'
-import { Box, Button } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import { pauseAtom, resetAtom, startAtom, statusAtom } from './timerAtoms'
@@ -12,7 +12,7 @@ export default function TimerControls() {
   const { t } = useTranslation()
 
   return (
-    <Box display="flex" gap={2} justifyContent="center">
+    <Stack direction="row" spacing={2} sx={{ justifyContent: 'center' }}>
       <Button
         variant="outlined"
         size="large"
@@ -52,6 +52,6 @@ export default function TimerControls() {
             : t('timer.controls.start')}
         </Button>
       )}
-    </Box>
+    </Stack>
   )
 }

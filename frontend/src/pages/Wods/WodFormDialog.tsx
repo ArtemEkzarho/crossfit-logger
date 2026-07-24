@@ -72,9 +72,9 @@ export default function WodFormDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('wods.form.title')}</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} pt={1}>
+        <Stack spacing={2} sx={{ pt: 1 }}>
 
-          <Box display="flex" gap={2}>
+          <Stack direction="row" spacing={2}>
             <TextField
               label={t('wods.form.date')}
               type="date"
@@ -97,7 +97,7 @@ export default function WodFormDialog({
                 ))}
               </Select>
             </FormControl>
-          </Box>
+          </Stack>
 
           <TextField
             label={t('wods.form.wodName')}
@@ -115,7 +115,7 @@ export default function WodFormDialog({
             </Typography>
             <Stack spacing={1}>
               {formData.movements.map((m, i) => (
-                <Box key={i} display="flex" gap={1} alignItems="center">
+                <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                   <TextField
                     label={t('wods.form.movement.name')}
                     size="small"
@@ -152,7 +152,7 @@ export default function WodFormDialog({
                   >
                     <Delete fontSize="small" color="error" />
                   </IconButton>
-                </Box>
+                </Stack>
               ))}
             </Stack>
             <Button size="small" startIcon={<Add />} onClick={addMovement} sx={{ mt: 1 }}>
@@ -169,7 +169,7 @@ export default function WodFormDialog({
             onChange={(e) => set({ notes: e.target.value })}
           />
 
-        </Box>
+        </Stack>
       </DialogContent>
 
       <DialogActions>

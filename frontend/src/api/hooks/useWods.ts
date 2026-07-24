@@ -1,7 +1,7 @@
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth } from '@clerk/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { addWodResult, createWod, deleteWod, deleteWodResult, getWods } from '../wods'
 import type { AddWodResultData, CreateWodData } from '../../types/wod'
+import { addWodResult, createWod, deleteWod, deleteWodResult, getWods } from '../wods'
 
 export function useWods() {
   const { getToken } = useAuth()

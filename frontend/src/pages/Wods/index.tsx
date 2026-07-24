@@ -97,7 +97,7 @@ export default function Wods() {
   if (isLoading) {
     return (
       <Container maxWidth="md">
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
           <CircularProgress />
         </Box>
       </Container>
@@ -107,7 +107,7 @@ export default function Wods() {
   if (error) {
     return (
       <Container maxWidth="md">
-        <Box my={4}>
+        <Box sx={{ my: 4 }}>
           <Alert severity="error">
             {t('wods.error', { message: error instanceof Error ? error.message : 'Unknown error' })}
           </Alert>
@@ -118,16 +118,16 @@ export default function Wods() {
 
   return (
     <Container maxWidth="md">
-      <Box my={4}>
+      <Box sx={{ my: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
           {t('wods.title')}
         </Typography>
-        <Typography variant="body1" color="text.secondary" paragraph>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
           {t('wods.subtitle')}
         </Typography>
 
         {!wods?.length ? (
-          <Box textAlign="center" py={8} color="text.secondary">
+          <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
             <Typography variant="h6">{t('wods.empty')}</Typography>
             <Typography variant="body2">{t('wods.emptyDesc')}</Typography>
           </Box>

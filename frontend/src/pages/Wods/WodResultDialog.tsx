@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Checkbox,
   Dialog,
@@ -7,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControlLabel,
+  Stack,
   TextField,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -58,10 +58,10 @@ export default function WodResultDialog({
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>{t('wods.results.dialog.title')}</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} pt={1}>
+        <Stack spacing={2} sx={{ pt: 1 }}>
 
           {wodType === 'forTime' && (
-            <Box display="flex" gap={2}>
+            <Stack direction="row" spacing={2}>
               <TextField
                 label={t('wods.form.timeMinutes')}
                 type="number"
@@ -78,11 +78,11 @@ export default function WodResultDialog({
                 slotProps={{ htmlInput: { min: 0, max: 59 } }}
                 sx={{ flex: 1 }}
               />
-            </Box>
+            </Stack>
           )}
 
           {(wodType === 'amrap' || wodType === 'emom') && (
-            <Box display="flex" gap={2}>
+            <Stack direction="row" spacing={2}>
               <TextField
                 label={t('wods.form.rounds')}
                 type="number"
@@ -101,7 +101,7 @@ export default function WodResultDialog({
                   sx={{ flex: 1 }}
                 />
               )}
-            </Box>
+            </Stack>
           )}
 
           {wodType === 'tabata' && (
@@ -131,7 +131,7 @@ export default function WodResultDialog({
             onChange={(e) => set({ notes: e.target.value })}
           />
 
-        </Box>
+        </Stack>
       </DialogContent>
 
       <DialogActions>

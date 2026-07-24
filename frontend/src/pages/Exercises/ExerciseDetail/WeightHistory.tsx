@@ -66,10 +66,10 @@ export default function WeightHistory({
               sx={{ cursor: 'pointer' }}
             >
               <CardContent sx={{ pb: '12px !important' }}>
-                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <Box>
-                    <Box display="flex" alignItems="baseline" gap={0.5} mb={0.5}>
-                      <Typography variant="h6" fontWeight={700}>
+                    <Stack direction="row" spacing={0.5} sx={{ alignItems: 'baseline', mb: 0.5 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
                         {primaryValue ?? '—'}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -85,8 +85,8 @@ export default function WeightHistory({
                           sx={{ ml: 1 }}
                         />
                       )}
-                    </Box>
-                    <Box display="flex" gap={1} flexWrap="wrap">
+                    </Stack>
+                    <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
                       <Typography variant="body2" color="text.secondary">
                         {formatDate(entry.date)}
                       </Typography>
@@ -107,9 +107,9 @@ export default function WeightHistory({
                           {t('exerciseDetail.weightHistory.header.sets').toLowerCase()}
                         </Typography>
                       )}
-                    </Box>
+                    </Stack>
                     {entry.notes && (
-                      <Typography variant="body2" color="text.secondary" mt={0.5}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                         {entry.notes}
                       </Typography>
                     )}
@@ -139,7 +139,7 @@ export default function WeightHistory({
                       </IconButton>
                     </Tooltip>
                   </Box>
-                </Box>
+                </Stack>
               </CardContent>
             </Card>
           )
@@ -180,8 +180,8 @@ export default function WeightHistory({
               >
                 <TableCell>{formatDate(entry.date)}</TableCell>
                 <TableCell align="right">
-                  <Box display="flex" alignItems="center" justifyContent="flex-end" gap={1}>
-                    <Typography fontWeight={isPR ? 700 : 400}>{primaryValue ?? '—'}</Typography>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
+                    <Typography sx={{ fontWeight: isPR ? 700 : 400 }}>{primaryValue ?? '—'}</Typography>
                     {isPR && (
                       <Chip
                         label={t('exerciseDetail.weightHistory.pr')}
@@ -189,7 +189,7 @@ export default function WeightHistory({
                         color="primary"
                       />
                     )}
-                  </Box>
+                  </Stack>
                 </TableCell>
                 {!isReps && <TableCell align="right">{entry.reps ?? '—'}</TableCell>}
                 <TableCell align="right">{entry.sets ?? '—'}</TableCell>

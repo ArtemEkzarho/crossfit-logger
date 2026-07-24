@@ -1,10 +1,10 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   TextField,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -65,9 +65,9 @@ export default function EditEntryDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('exerciseDetail.editDialog.title')}</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} pt={1}>
+        <Stack spacing={2} sx={{ pt: 1 }}>
           {!isReps && (
-            <Box display="flex" flexDirection="row" gap={2}>
+            <Stack direction="row" spacing={2}>
               <TextField
                 label={t('exercises.form.weight')}
                 type="number"
@@ -98,7 +98,7 @@ export default function EditEntryDialog({
                 disabled={!maxValue}
                 helperText={t('exercises.form.weightPercentHelper')}
               />
-            </Box>
+            </Stack>
           )}
           <TextField
             label={t('exercises.form.reps')}
@@ -137,7 +137,7 @@ export default function EditEntryDialog({
             fullWidth
             slotProps={{ inputLabel: { shrink: true } }}
           />
-        </Box>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{t('common.cancel')}</Button>

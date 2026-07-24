@@ -8,6 +8,7 @@ import {
   IconButton,
   List,
   ListItem,
+  Stack,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -43,34 +44,32 @@ export default function ExerciseDetailHeader({
         {t('exerciseDetail.header.back')}
       </Button>
 
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        flexWrap="wrap"
-        gap={2}
-        mb={4}
+      <Stack
+        direction="row"
+        spacing={2}
+        useFlexGap
+        sx={{ justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', mb: 4 }}
       >
         <Box>
           <Typography variant="h3" component="h1">
             {name}
           </Typography>
           {maxValue != null && (
-            <Box display="flex" alignItems="baseline" gap={1} mt={1}>
-              <Typography variant="h2" color="primary" fontWeight={700}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', mt: 1 }}>
+              <Typography variant="h2" color="primary" sx={{ fontWeight: 700 }}>
                 {maxValue}
               </Typography>
               <Typography variant="h5" color="text.secondary">
                 {unit}
               </Typography>
-              <Typography variant="body2" color="text.secondary" ml={1}>
+              <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                 {t('exerciseDetail.header.personalBest')}
               </Typography>
-            </Box>
+            </Stack>
           )}
         </Box>
 
-        <Box display="flex" gap={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <Tooltip
             title={
               maxValue == null
@@ -92,17 +91,17 @@ export default function ExerciseDetailHeader({
           <Button variant="contained" onClick={onLogWeight}>
             {t('exerciseDetail.header.logEntry')}
           </Button>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullScreen>
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
             {t('exerciseDetail.header.prDialogTitle', { value: maxValue, unit })}
             <IconButton onClick={() => setOpen(false)}>
               <ArrowBack />
             </IconButton>
-          </Box>
+          </Stack>
         </DialogTitle>
         <DialogContent>
           <List disablePadding>
@@ -110,14 +109,14 @@ export default function ExerciseDetailHeader({
               const value = parseFloat((((maxValue ?? 0) * pct) / 100).toFixed(2))
               return (
                 <ListItem key={pct} divider sx={{ py: 2 }}>
-                  <Box display="flex" justifyContent="space-between" width="100%">
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', width: '100%' }}>
                     <Typography variant="h6" color="text.secondary">
                       {pct}%
                     </Typography>
-                    <Typography variant="h6" fontWeight={700}>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
                       {value} {unit}
                     </Typography>
-                  </Box>
+                  </Stack>
                 </ListItem>
               )
             })}

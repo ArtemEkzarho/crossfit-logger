@@ -1,4 +1,4 @@
-import { useAuth, RedirectToSignIn } from '@clerk/clerk-react'
+import { useAuth, RedirectToSignIn } from '@clerk/react'
 import { CircularProgress, Box } from '@mui/material'
 
 interface ProtectedRouteProps {
@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (!isLoaded) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
         <CircularProgress />
       </Box>
     )

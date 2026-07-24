@@ -44,7 +44,7 @@ export default function Timer() {
 
   return (
     <Container maxWidth="sm">
-      <Box my={4}>
+      <Box sx={{ my: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
           {t('timer.title')}
         </Typography>

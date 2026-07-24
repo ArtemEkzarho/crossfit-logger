@@ -76,7 +76,7 @@ export default function Exercises() {
   if (isLoading) {
     return (
       <Container maxWidth="lg">
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
           <CircularProgress />
         </Box>
       </Container>
@@ -86,7 +86,7 @@ export default function Exercises() {
   if (error) {
     return (
       <Container maxWidth="lg">
-        <Box my={4}>
+        <Box sx={{ my: 4 }}>
           <Alert severity="error">
             {t('exercises.error', {
               message: error instanceof Error ? error.message : 'Unknown error',
@@ -99,11 +99,11 @@ export default function Exercises() {
 
   return (
     <Container maxWidth="lg">
-      <Box my={4}>
+      <Box sx={{ my: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
           {t('exercises.title')}
         </Typography>
-        <Typography variant="body1" color="text.secondary" paragraph>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
           {t('exercises.subtitle')}
         </Typography>
 

@@ -1,4 +1,4 @@
-import { Box, Chip, Paper, Typography } from '@mui/material'
+import { Box, Chip, Paper, Stack, Typography } from '@mui/material'
 import { useAtomValue } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import {
@@ -33,7 +33,7 @@ function SubLabel() {
 
   if (mode === 'Tabata' && status !== 'idle') {
     return (
-      <Box display="flex" gap={1.5} alignItems="center">
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
         <Chip
           label={phase === 'work' ? t('timer.display.work') : t('timer.display.rest')}
           color={phase === 'work' ? 'success' : 'warning'}
@@ -42,7 +42,7 @@ function SubLabel() {
         <Typography variant="h6" color="text.secondary">
           {t('timer.display.round', { current: currentRound, total: tabataRounds })}
         </Typography>
-      </Box>
+      </Stack>
     )
   }
 
@@ -72,7 +72,7 @@ export default function TimerDisplay() {
           >
             {preCountdown}
           </Typography>
-          <Typography variant="h6" color="text.secondary" mt={2}>
+          <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
             {t('timer.display.getReady')}
           </Typography>
         </>
@@ -93,11 +93,7 @@ export default function TimerDisplay() {
             {fmt(displaySec)}
           </Typography>
           <Box
-            mt={2}
-            minHeight={40}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+            sx={{ mt: 2, minHeight: 40, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
             {status === 'done' ? (
               <Chip label={t('timer.display.done')} color="error" size="medium" />
