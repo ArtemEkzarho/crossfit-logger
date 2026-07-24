@@ -1,11 +1,4 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-  useUser,
-} from '@clerk/clerk-react'
+import { Show, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/react'
 import { Close } from '@mui/icons-material'
 import {
   Box,
@@ -16,6 +9,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Stack,
   Typography,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -33,39 +27,34 @@ export default function NavDrawer({ open, onClose }: NavDrawerProps) {
 
   return (
     <Drawer anchor="left" open={open} onClose={onClose}>
-      <Box width={250} role="presentation">
-        <Box display="flex" alignItems="center" justifyContent="space-between" pr={1}>
-          <SignedIn>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              flexDirection="row"
-              gap={1.5}
-              py={2}
-              overflow="hidden"
-              sx={{ cursor: 'pointer' }}
+      <Box sx={{ width: 250 }} role="presentation">
+        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
+          <Show when="signed-in">
+            <Stack
+              direction="row"
+              spacing={1.5}
+              sx={{ alignItems: 'center', justifyContent: 'center', py: 2, overflow: 'hidden', cursor: 'pointer' }}
               onClick={(e) => {
                 const btn =
                   e.currentTarget.querySelector<HTMLButtonElement>('.cl-userButtonTrigger')
                 btn?.click()
               }}
             >
-              <Box display="flex" pl={2} onClick={(e) => e.stopPropagation()}>
+              <Box sx={{ display: 'flex', pl: 2 }} onClick={(e) => e.stopPropagation()}>
                 <UserButton />
               </Box>
               <Typography variant="subtitle1" noWrap>
                 {user?.fullName ?? user?.firstName}
               </Typography>
-            </Box>
-          </SignedIn>
+            </Stack>
+          </Show>
           <IconButton onClick={onClose}>
             <Close />
           </IconButton>
-        </Box>
+        </Stack>
 
         <List>
-          <SignedIn>
+          <Show when="signed-in">
             <ListItem disablePadding>
               <ListItemButton onClick={() => goTo(localePath('/dashboard'))}>
                 <ListItemText primary={t('layout.nav.dashboard')} />
@@ -81,7 +70,7 @@ export default function NavDrawer({ open, onClose }: NavDrawerProps) {
                 <ListItemText primary={t('layout.nav.wods')} />
               </ListItemButton>
             </ListItem>
-          </SignedIn>
+          </Show>
           <ListItem disablePadding>
             <ListItemButton onClick={() => goTo(localePath('/timer'))}>
               <ListItemText primary={t('layout.nav.timer')} />
@@ -89,7 +78,7 @@ export default function NavDrawer({ open, onClose }: NavDrawerProps) {
           </ListItem>
         </List>
 
-        <SignedOut>
+        <Show when="signed-out">
           <List>
             <ListItem>
               <SignInButton mode="modal">
@@ -106,7 +95,7 @@ export default function NavDrawer({ open, onClose }: NavDrawerProps) {
               </SignUpButton>
             </ListItem>
           </List>
-        </SignedOut>
+        </Show>
       </Box>
     </Drawer>
   )

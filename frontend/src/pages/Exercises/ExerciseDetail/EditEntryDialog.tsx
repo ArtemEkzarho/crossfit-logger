@@ -1,12 +1,13 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   TextField,
 } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ExerciseMetric } from '../../../types/exercise'
 
@@ -24,6 +25,7 @@ interface EditEntryDialogProps {
   editEntry: EditEntryState | null
   isSaving: boolean
   metric: ExerciseMetric
+  maxValue: number | undefined
   onChange: (field: keyof Omit<EditEntryState, 'entryId'>, value: string) => void
   onSubmit: () => void
   onClose: () => void
@@ -34,18 +36,26 @@ export default function EditEntryDialog({
   editEntry,
   isSaving,
   metric,
+  maxValue,
   onChange,
   onSubmit,
   onClose,
 }: EditEntryDialogProps) {
   const { t } = useTranslation()
   const isReps = metric === 'reps'
+  const [percentDraft, setPercentDraft] = useState('')
+
+  useEffect(() => {
+    setPercentDraft(
+      editEntry?.weight && maxValue
+        ? ((Number(editEntry.weight) / maxValue) * 100).toFixed(1)
+        : ''
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editEntry?.entryId, open])
 
   const isSubmitDisabled = isReps
-    ? !editEntry?.reps ||
-      Number(editEntry.reps) < 1 ||
-      Number(editEntry.reps) > 500 ||
-      isSaving
+    ? !editEntry?.reps || Number(editEntry.reps) < 1 || Number(editEntry.reps) > 500 || isSaving
     : !editEntry?.weight ||
       Number(editEntry.weight) < 1 ||
       Number(editEntry.weight) > 300 ||
@@ -55,18 +65,40 @@ export default function EditEntryDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('exerciseDetail.editDialog.title')}</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} pt={1}>
+        <Stack spacing={2} sx={{ pt: 1 }}>
           {!isReps && (
-            <TextField
-              label={t('exercises.form.weight')}
-              type="number"
-              value={editEntry?.weight ?? ''}
-              onChange={(e) => onChange('weight', e.target.value)}
-              required
-              fullWidth
-              slotProps={{ htmlInput: { min: 1, max: 300 } }}
-              helperText={t('exercises.form.weightHelper')}
-            />
+            <Stack direction="row" spacing={2}>
+              <TextField
+                label={t('exercises.form.weight')}
+                type="number"
+                value={editEntry?.weight ?? ''}
+                onChange={(e) => {
+                  const weight = e.target.value
+                  onChange('weight', weight)
+                  setPercentDraft(
+                    weight && maxValue ? ((Number(weight) / maxValue) * 100).toFixed(1) : ''
+                  )
+                }}
+                required
+                fullWidth
+                slotProps={{ htmlInput: { min: 1, max: 300 } }}
+                helperText={t('exercises.form.weightHelper')}
+              />
+              <TextField
+                label={t('exercises.form.weightPercent')}
+                type="number"
+                value={percentDraft}
+                onChange={(e) => {
+                  const pct = e.target.value
+                  setPercentDraft(pct)
+                  if (!maxValue) return
+                  onChange('weight', pct === '' ? '' : ((Number(pct) * maxValue) / 100).toFixed(1))
+                }}
+                fullWidth
+                disabled={!maxValue}
+                helperText={t('exercises.form.weightPercentHelper')}
+              />
+            </Stack>
           )}
           <TextField
             label={t('exercises.form.reps')}
@@ -105,7 +137,7 @@ export default function EditEntryDialog({
             fullWidth
             slotProps={{ inputLabel: { shrink: true } }}
           />
-        </Box>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{t('common.cancel')}</Button>

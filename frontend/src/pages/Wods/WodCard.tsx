@@ -1,5 +1,5 @@
-import { useUser } from '@clerk/clerk-react'
-import { AddCircleOutline, Delete } from '@mui/icons-material'
+import { useUser } from '@clerk/react'
+import { AddCircleOutlined, Delete } from '@mui/icons-material'
 import {
   Box,
   Card,
@@ -57,12 +57,12 @@ function ResultRow({
   const isOwn = result.userId === currentUserId
 
   return (
-    <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
-      <Typography variant="body2" fontWeight={600} sx={{ minWidth: 80 }}>
+    <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+      <Typography variant="body2" sx={{ minWidth: 80, fontWeight: 600 }}>
         {result.userName}
       </Typography>
       {score && (
-        <Typography variant="body2" color="primary" fontWeight={700}>
+        <Typography variant="body2" color="primary" sx={{ fontWeight: 700 }}>
           {score}
         </Typography>
       )}
@@ -81,7 +81,7 @@ function ResultRow({
           </IconButton>
         </Tooltip>
       )}
-    </Box>
+    </Stack>
   )
 }
 
@@ -94,9 +94,9 @@ export default function WodCard({ wod, onDelete, onAddResult, onDeleteResult }: 
     <Card variant="outlined">
       <CardContent>
         {/* Header */}
-        <Box display="flex" alignItems="flex-start" justifyContent="space-between" gap={1}>
-          <Box flex={1} minWidth={0}>
-            <Box display="flex" alignItems="center" gap={1} flexWrap="wrap" mb={0.5}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', flexWrap: 'wrap', mb: 0.5 }}>
               <Typography variant="caption" color="text.secondary">
                 {formatDate(wod.date)}
               </Typography>
@@ -105,9 +105,9 @@ export default function WodCard({ wod, onDelete, onAddResult, onDeleteResult }: 
                 color={WOD_TYPE_COLORS[wod.type]}
                 size="small"
               />
-            </Box>
+            </Stack>
             {wod.name && (
-              <Typography variant="h6" fontWeight={700}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 {wod.name}
               </Typography>
             )}
@@ -119,11 +119,11 @@ export default function WodCard({ wod, onDelete, onAddResult, onDeleteResult }: 
               </IconButton>
             </Tooltip>
           )}
-        </Box>
+        </Stack>
 
         {/* Movements */}
         {wod.movements.filter((m) => m.name).length > 0 && (
-          <Stack spacing={0.25} my={1}>
+          <Stack spacing={0.25} sx={{ my: 1 }}>
             {wod.movements
               .filter((m) => m.name)
               .map((m, i) => (
@@ -136,7 +136,7 @@ export default function WodCard({ wod, onDelete, onAddResult, onDeleteResult }: 
 
         {/* WOD notes */}
         {wod.notes && (
-          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }} mb={1}>
+          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', mb: 1 }}>
             {wod.notes}
           </Typography>
         )}
@@ -144,14 +144,14 @@ export default function WodCard({ wod, onDelete, onAddResult, onDeleteResult }: 
         <Divider sx={{ my: 1 }} />
 
         {/* Results */}
-        <Box display="flex" alignItems="center" justifyContent="space-between" mb={0.5}>
+        <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
           <Typography variant="subtitle2">{t('wods.results.title')}</Typography>
           <Tooltip title={t('wods.results.add')}>
             <IconButton size="small" color="primary" onClick={() => onAddResult(wod)}>
-              <AddCircleOutline fontSize="small" />
+              <AddCircleOutlined fontSize="small" />
             </IconButton>
           </Tooltip>
-        </Box>
+        </Stack>
 
         {wod.results.length === 0 ? (
           <Typography variant="body2" color="text.secondary">

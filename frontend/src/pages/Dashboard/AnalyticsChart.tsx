@@ -32,7 +32,7 @@ export default function AnalyticsChart() {
 
   if (isLoading) {
     return (
-      <Box display="flex" alignItems="center" justifyContent="center" height={400}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
         <CircularProgress />
       </Box>
     )
@@ -40,7 +40,7 @@ export default function AnalyticsChart() {
 
   if (data.length === 0) {
     return (
-      <Box display="flex" alignItems="center" justifyContent="center" height={400}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
         <Typography color="text.secondary">{t('dashboard.noData')}</Typography>
       </Box>
     )
@@ -74,12 +74,12 @@ export default function AnalyticsChart() {
         </LineChart>
       </ResponsiveContainer>
       {period >= 30 && (
-        <Typography variant="caption" color="text.secondary" mt={1} display="block">
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
           {t('dashboard.weeklyNote')}
         </Typography>
       )}
       {fallbackUsers.size > 0 && (
-        <Typography variant="caption" color="text.secondary" mt={0.5} display="block">
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
           {t('dashboard.prNote')}
         </Typography>
       )}

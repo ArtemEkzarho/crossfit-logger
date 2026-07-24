@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, Stack, TextField, Typography } from '@mui/material'
 import { useAtom, useAtomValue } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import {
@@ -53,13 +53,13 @@ export default function TimerConfig() {
   const { t } = useTranslation()
 
   return (
-    <Box mb={2}>
+    <Box sx={{ mb: 2 }}>
       {mode === 'ForTime' ? (
         <Typography variant="body2" color="text.secondary">
           {t('timer.config.forTimeHint')}
         </Typography>
       ) : mode === 'Tabata' ? (
-        <Box display="flex" gap={2} flexWrap="wrap">
+        <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
           <ConfigField
             label={t('timer.config.work')}
             value={tabataWork}
@@ -84,7 +84,7 @@ export default function TimerConfig() {
             max={50}
             helperText={t('timer.config.roundsHelper')}
           />
-        </Box>
+        </Stack>
       ) : (
         <ConfigField
           label={t('timer.config.duration')}

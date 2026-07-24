@@ -1,5 +1,5 @@
 import { FitnessCenter, Menu as MenuIcon } from '@mui/icons-material'
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material'
+import { AppBar, Button, IconButton, Stack, Toolbar, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation } from '../../hooks/useAppNavigation'
 import { SUPPORTED_LOCALES } from '../../locales/i18n'
@@ -18,18 +18,17 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
         <IconButton color="inherit" onClick={onMenuClick}>
           <MenuIcon />
         </IconButton>
-        <Box
-          display="flex"
-          alignItems="center"
-          sx={{ cursor: 'pointer' }}
+        <Stack
+          direction="row"
+          sx={{ alignItems: 'center', cursor: 'pointer' }}
           onClick={() => goTo(localePath(''))}
         >
           <FitnessCenter sx={{ mr: 1 }} />
           <Typography variant="h6" component="div" sx={{ textWrap: 'nowrap' }}>
             {t('layout.appName')}
           </Typography>
-        </Box>
-        <Box display="flex" gap={0.5}>
+        </Stack>
+        <Stack direction="row" spacing={0.5}>
           {SUPPORTED_LOCALES.map((lang) => (
             <Button
               key={lang}
@@ -42,7 +41,7 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
               {lang.toUpperCase()}
             </Button>
           ))}
-        </Box>
+        </Stack>
       </Toolbar>
     </AppBar>
   )

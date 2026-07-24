@@ -14,7 +14,7 @@ const Wods = lazy(() => import('./pages/Wods'))
 
 function PageLoader() {
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" minHeight="60vh">
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
       <CircularProgress />
     </Box>
   )

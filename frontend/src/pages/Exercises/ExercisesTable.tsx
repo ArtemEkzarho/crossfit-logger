@@ -43,7 +43,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
         <Typography variant="h6" color="text.secondary" gutterBottom>
           {t('exercises.table.empty')}
         </Typography>
-        <Typography variant="body2" color="text.secondary" paragraph>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           {t('exercises.table.emptyDesc')}
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={onCreate}>
@@ -55,7 +55,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
 
   if (isMobile) {
     return (
-      <Stack spacing={2} mt={3}>
+      <Stack spacing={2} sx={{ mt: 3 }}>
         {exercises.map((exercise) => {
           const maxValue = getMaxValue(exercise)
           const metric = getExerciseMetric(exercise.name)
@@ -64,10 +64,10 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
             <Card key={exercise._id}>
               <CardActionArea onClick={() => onNavigate(exercise.name)}>
                 <CardContent>
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box>
                       <Typography variant="h6">{exercise.name}</Typography>
-                      <Box display="flex" gap={1} flexWrap="wrap" mt={0.5}>
+                      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 0.5 }}>
                         {maxValue != null && (
                           <Chip
                             label={`${maxValue} ${metric === 'reps' ? t('exerciseDetail.weightHistory.header.reps') : t('dashboard.unit.kg')}`}
@@ -87,10 +87,10 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
                           size="small"
                           variant="outlined"
                         />
-                      </Box>
+                      </Stack>
                     </Box>
                     <ChevronRight color="action" />
-                  </Box>
+                  </Stack>
                 </CardContent>
               </CardActionArea>
             </Card>
@@ -125,11 +125,11 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
                 sx={{ cursor: 'pointer' }}
               >
                 <TableCell component="th" scope="row">
-                  <Typography fontWeight={500}>{exercise.name}</Typography>
+                  <Typography sx={{ fontWeight: 500 }}>{exercise.name}</Typography>
                 </TableCell>
                 <TableCell align="right">
                   {maxValue != null ? (
-                    <Typography fontWeight={700} color="primary">
+                    <Typography color="primary" sx={{ fontWeight: 700 }}>
                       {maxValue}{' '}
                       {metric === 'reps'
                         ? t('exerciseDetail.weightHistory.header.reps')

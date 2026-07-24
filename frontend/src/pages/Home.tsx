@@ -1,6 +1,6 @@
-import { Container, Typography, Box, Button, Card, CardContent } from '@mui/material'
-import { SignInButton, SignUpButton, SignedOut, SignedIn } from '@clerk/clerk-react'
+import { SignInButton, SignUpButton, Show } from '@clerk/react'
 import { FitnessCenter } from '@mui/icons-material'
+import { Container, Typography, Box, Button, Card, CardContent, Stack } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useAppNavigation } from '../hooks/useAppNavigation'
 
@@ -10,17 +10,17 @@ export default function Home() {
 
   return (
     <Container maxWidth="md">
-      <Box my={8} textAlign="center">
+      <Box sx={{ my: 8, textAlign: 'center' }}>
         <FitnessCenter sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
         <Typography variant="h2" component="h1" gutterBottom>
           {t('home.title')}
         </Typography>
-        <Typography variant="h5" color="text.secondary" paragraph>
+        <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
           {t('home.subtitle')}
         </Typography>
 
-        <SignedOut>
-          <Box mt={4} display="flex" gap={2} justifyContent="center">
+        <Show when="signed-out">
+          <Stack direction="row" spacing={2} sx={{ mt: 4, justifyContent: 'center' }}>
             <SignInButton mode="modal">
               <Button variant="contained" size="large">
                 {t('auth.signIn')}
@@ -31,26 +31,27 @@ export default function Home() {
                 {t('auth.signUp')}
               </Button>
             </SignUpButton>
-          </Box>
-        </SignedOut>
+          </Stack>
+        </Show>
 
-        <SignedIn>
-          <Box mt={4}>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => goTo(localePath('/dashboard'))}
-            >
+        <Show when="signed-in">
+          <Box sx={{ mt: 4 }}>
+            <Button variant="contained" size="large" onClick={() => goTo(localePath('/dashboard'))}>
               {t('home.goDashboard')}
             </Button>
           </Box>
-        </SignedIn>
+        </Show>
 
-        <Box mt={6}>
+        <Box sx={{ mt: 6 }}>
           <Typography variant="h4" gutterBottom>
             {t('home.features')}
           </Typography>
-          <Box display="flex" gap={2} mt={3} flexWrap="wrap" justifyContent="center">
+          <Stack
+            direction="row"
+            spacing={2}
+            useFlexGap
+            sx={{ mt: 3, flexWrap: 'wrap', justifyContent: 'center' }}
+          >
             <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -76,12 +77,10 @@ export default function Home() {
                 <Typography variant="h6" gutterBottom>
                   {t('home.feature.setGoals')}
                 </Typography>
-                <Typography color="text.secondary">
-                  {t('home.feature.setGoalsDesc')}
-                </Typography>
+                <Typography color="text.secondary">{t('home.feature.setGoalsDesc')}</Typography>
               </CardContent>
             </Card>
-          </Box>
+          </Stack>
         </Box>
       </Box>
     </Container>

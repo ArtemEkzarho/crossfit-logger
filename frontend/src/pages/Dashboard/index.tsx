@@ -8,7 +8,7 @@ export default function Dashboard() {
 
   return (
     <Container maxWidth="lg">
-      <Box my={4}>
+      <Box sx={{ my: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
           {t('dashboard.title')}
         </Typography>
@@ -16,7 +16,7 @@ export default function Dashboard() {
           {t('dashboard.subtitle')}
         </Typography>
 
-        <Box mt={3}>
+        <Box sx={{ mt: 3 }}>
           <ChartFilters />
           <AnalyticsChart />
         </Box>
