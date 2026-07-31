@@ -7,7 +7,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ExerciseMetric } from '../../../types/exercise'
 
@@ -44,15 +44,16 @@ export default function EditEntryDialog({
   const { t } = useTranslation()
   const isReps = metric === 'reps'
   const [percentDraft, setPercentDraft] = useState('')
+  const [loadedEntryId, setLoadedEntryId] = useState(editEntry?.entryId)
 
-  useEffect(() => {
+  if (editEntry?.entryId !== loadedEntryId) {
+    setLoadedEntryId(editEntry?.entryId)
     setPercentDraft(
       editEntry?.weight && maxValue
         ? ((Number(editEntry.weight) / maxValue) * 100).toFixed(1)
         : ''
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editEntry?.entryId, open])
+  }
 
   const isSubmitDisabled = isReps
     ? !editEntry?.reps || Number(editEntry.reps) < 1 || Number(editEntry.reps) > 500 || isSaving

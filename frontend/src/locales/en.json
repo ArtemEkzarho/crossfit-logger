@@ -51,16 +51,21 @@
       "7": "7 days",
       "14": "14 days",
       "30": "30 days",
-      "90": "90 days"
+      "90": "90 days",
+      "180": "180 days",
+      "365": "1 year"
     }
   },
   "exercises": {
     "title": "Exercises",
     "subtitle": "Track and manage your workout exercises.",
+    "addButton": "Add Exercise",
     "successLogged": "Weight logged successfully",
+    "successDeleted": "Exercise deleted",
     "error": "Failed to load exercises: {{message}}",
     "form": {
       "title": "Log Entry",
+      "newTitle": "New Exercise",
       "name": "Exercise Name",
       "weight": "Weight (kg)",
       "weightHelper": "1 – 300 kg",
@@ -82,7 +87,8 @@
         "exercise": "Exercise",
         "best": "Best",
         "entries": "Entries",
-        "lastLogged": "Last Logged"
+        "lastLogged": "Last Logged",
+        "actions": "Actions"
       }
     },
     "deleteDialog": {

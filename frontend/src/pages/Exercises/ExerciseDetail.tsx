@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import {
+  useDeleteExercise,
   useDeleteWeightEntry,
   useExercise,
   useLogWeight,
@@ -20,6 +21,7 @@ import {
 import { useAppNavigation } from '../../hooks/useAppNavigation'
 import type { ExerciseName, UpdateWeightEntryData, WeightEntry } from '../../types/exercise'
 import { getExerciseMetric, getMaxValue } from '../../types/exercise'
+import DeleteConfirmDialog from './DeleteConfirmDialog'
 import DeleteEntryDialog from './ExerciseDetail/DeleteEntryDialog'
 import EditEntryDialog, { type EditEntryState } from './ExerciseDetail/EditEntryDialog'
 import ExerciseDetailHeader from './ExerciseDetail/ExerciseDetailHeader'
@@ -36,6 +38,7 @@ export default function ExerciseDetail() {
   const logWeight = useLogWeight()
   const updateEntry = useUpdateWeightEntry()
   const deleteEntry = useDeleteWeightEntry()
+  const deleteExercise = useDeleteExercise()
 
   const [logFormOpen, setLogFormOpen] = useState(false)
   const [logFormData, setLogFormData] = useState<ExerciseFormData>({
@@ -44,6 +47,7 @@ export default function ExerciseDetail() {
   })
   const [editEntry, setEditEntry] = useState<EditEntryState | null>(null)
   const [deleteEntryId, setDeleteEntryId] = useState<string | null>(null)
+  const [deleteExerciseOpen, setDeleteExerciseOpen] = useState(false)
   const [snackbar, setSnackbar] = useState<{
     open: boolean
     message: string
@@ -127,6 +131,15 @@ export default function ExerciseDetail() {
     }
   }
 
+  const handleDeleteExercise = async () => {
+    try {
+      await deleteExercise.mutateAsync(decodedName)
+      goTo(localePath('/exercises'))
+    } catch (err) {
+      showSnackbar(err instanceof Error ? err.message : 'An error occurred', 'error')
+    }
+  }
+
   if (isLoading) {
     return (
       <Container maxWidth="lg">
@@ -147,6 +160,7 @@ export default function ExerciseDetail() {
             metric="weight"
             onBack={() => goTo(localePath('/exercises'))}
             onLogWeight={() => {}}
+            onDelete={() => {}}
           />
           <Alert severity="error">
             {error instanceof Error ? error.message : t('exerciseDetail.notFound')}
@@ -174,6 +188,7 @@ export default function ExerciseDetail() {
             setLogFormData({ ...emptyForm, name: decodedName as ExerciseName })
             setLogFormOpen(true)
           }}
+          onDelete={() => setDeleteExerciseOpen(true)}
         />
 
         <Divider sx={{ mb: 3 }} />
@@ -196,6 +211,7 @@ export default function ExerciseDetail() {
         isSaving={logWeight.isPending}
         formData={logFormData}
         lockedName={decodedName as ExerciseName}
+        maxValue={maxValue}
         onFormChange={handleLogFormChange}
         onSelectChange={handleLogSelectChange}
         onSubmit={handleLogSubmit}
@@ -218,6 +234,14 @@ export default function ExerciseDetail() {
         isDeleting={deleteEntry.isPending}
         onConfirm={handleDeleteEntry}
         onClose={() => setDeleteEntryId(null)}
+      />
+
+      <DeleteConfirmDialog
+        open={deleteExerciseOpen}
+        exercise={exercise}
+        isDeleting={deleteExercise.isPending}
+        onConfirm={handleDeleteExercise}
+        onClose={() => setDeleteExerciseOpen(false)}
       />
 
       <Snackbar

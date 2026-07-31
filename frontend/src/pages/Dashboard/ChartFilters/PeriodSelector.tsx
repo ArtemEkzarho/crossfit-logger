@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import { periodAtom } from '../atoms'
 
-export const PERIOD_OPTIONS = [7, 14, 30, 90] as const
+export const PERIOD_OPTIONS = [7, 14, 30, 90, 180, 365] as const
 export type Period = (typeof PERIOD_OPTIONS)[number]
 
 export default function PeriodSelector() {
