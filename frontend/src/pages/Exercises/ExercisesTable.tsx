@@ -1,11 +1,11 @@
-import { Add, ChevronRight } from '@mui/icons-material'
+import { Add, ChevronRight, Delete } from '@mui/icons-material'
 import {
   Box,
   Button,
   Card,
-  CardActionArea,
   CardContent,
   Chip,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -26,13 +27,19 @@ interface ExercisesTableProps {
   exercises: Exercise[]
   onNavigate: (name: string) => void
   onCreate: () => void
+  onDelete: (exercise: Exercise) => void
 }
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString()
 }
 
-export default function ExercisesTable({ exercises, onNavigate, onCreate }: ExercisesTableProps) {
+export default function ExercisesTable({
+  exercises,
+  onNavigate,
+  onCreate,
+  onDelete,
+}: ExercisesTableProps) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const { t } = useTranslation()
@@ -61,38 +68,50 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
           const metric = getExerciseMetric(exercise.name)
           const lastEntry = exercise.weightHistory?.[exercise.weightHistory.length - 1]
           return (
-            <Card key={exercise._id}>
-              <CardActionArea onClick={() => onNavigate(exercise.name)}>
-                <CardContent>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box>
-                      <Typography variant="h6">{exercise.name}</Typography>
-                      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 0.5 }}>
-                        {maxValue != null && (
-                          <Chip
-                            label={`${maxValue} ${metric === 'reps' ? t('exerciseDetail.weightHistory.header.reps') : t('dashboard.unit.kg')}`}
-                            size="small"
-                            color="primary"
-                          />
-                        )}
-                        {lastEntry && (
-                          <Chip
-                            label={formatDate(lastEntry.date)}
-                            size="small"
-                            variant="outlined"
-                          />
-                        )}
+            <Card
+              key={exercise._id}
+              onClick={() => onNavigate(exercise.name)}
+              sx={{ cursor: 'pointer' }}
+            >
+              <CardContent>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box>
+                    <Typography variant="h6">{exercise.name}</Typography>
+                    <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mt: 0.5 }}>
+                      {maxValue != null && (
                         <Chip
-                          label={`${exercise.weightHistory.length} ${t('exercises.table.header.entries').toLowerCase()}`}
+                          label={`${maxValue} ${metric === 'reps' ? t('exerciseDetail.weightHistory.header.reps') : t('dashboard.unit.kg')}`}
                           size="small"
-                          variant="outlined"
+                          color="primary"
                         />
-                      </Stack>
-                    </Box>
+                      )}
+                      {lastEntry && (
+                        <Chip label={formatDate(lastEntry.date)} size="small" variant="outlined" />
+                      )}
+                      <Chip
+                        label={`${exercise.weightHistory.length} ${t('exercises.table.header.entries').toLowerCase()}`}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </Stack>
+                  </Box>
+                  <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+                    <Tooltip title={t('common.delete')}>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onDelete(exercise)
+                        }}
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                     <ChevronRight color="action" />
                   </Stack>
-                </CardContent>
-              </CardActionArea>
+                </Stack>
+              </CardContent>
             </Card>
           )
         })}
@@ -109,7 +128,7 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
             <TableCell align="right">{t('exercises.table.header.best')}</TableCell>
             <TableCell align="right">{t('exercises.table.header.entries')}</TableCell>
             <TableCell>{t('exercises.table.header.lastLogged')}</TableCell>
-            <TableCell />
+            <TableCell align="center">{t('exercises.table.header.actions')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -141,8 +160,22 @@ export default function ExercisesTable({ exercises, onNavigate, onCreate }: Exer
                 </TableCell>
                 <TableCell align="right">{exercise.weightHistory.length}</TableCell>
                 <TableCell>{lastEntry ? formatDate(lastEntry.date) : '—'}</TableCell>
-                <TableCell align="right">
-                  <ChevronRight color="action" />
+                <TableCell align="center">
+                  <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Tooltip title={t('common.delete')}>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onDelete(exercise)
+                        }}
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <ChevronRight color="action" />
+                  </Stack>
                 </TableCell>
               </TableRow>
             )

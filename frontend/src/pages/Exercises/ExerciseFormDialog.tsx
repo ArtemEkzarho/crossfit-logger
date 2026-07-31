@@ -12,6 +12,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ExerciseName } from '../../types/exercise'
 import { EXERCISE_NAMES, getExerciseMetric } from '../../types/exercise'
@@ -39,6 +40,7 @@ interface ExerciseFormDialogProps {
   isSaving: boolean
   formData: ExerciseFormData
   lockedName?: ExerciseName
+  maxValue?: number
   onFormChange: (field: keyof ExerciseFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void
   onSelectChange: (e: SelectChangeEvent) => void
   onSubmit: () => void
@@ -50,6 +52,7 @@ export default function ExerciseFormDialog({
   isSaving,
   formData,
   lockedName,
+  maxValue,
   onFormChange,
   onSelectChange,
   onSubmit,
@@ -58,6 +61,16 @@ export default function ExerciseFormDialog({
   const { t } = useTranslation()
   const metric = formData.name ? getExerciseMetric(formData.name) : 'weight'
   const isReps = metric === 'reps'
+  const [percentDraft, setPercentDraft] = useState('')
+  const syncKey = `${open}:${formData.name}`
+  const [loadedSyncKey, setLoadedSyncKey] = useState(syncKey)
+
+  if (syncKey !== loadedSyncKey) {
+    setLoadedSyncKey(syncKey)
+    setPercentDraft(
+      formData.weight && maxValue ? ((Number(formData.weight) / maxValue) * 100).toFixed(1) : ''
+    )
+  }
 
   const isSubmitDisabled = isReps
     ? !formData.name ||
@@ -73,7 +86,9 @@ export default function ExerciseFormDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{t('exercises.form.title')}</DialogTitle>
+      <DialogTitle>
+        {t(lockedName ? 'exercises.form.title' : 'exercises.form.newTitle')}
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
           <FormControl fullWidth required>
@@ -92,7 +107,7 @@ export default function ExerciseFormDialog({
               ))}
             </Select>
           </FormControl>
-          {!isReps && (
+          {!isReps && maxValue === undefined && (
             <TextField
               label={t('exercises.form.weight')}
               type="number"
@@ -103,6 +118,39 @@ export default function ExerciseFormDialog({
               slotProps={{ htmlInput: { min: 1, max: 300 } }}
               helperText={t('exercises.form.weightHelper')}
             />
+          )}
+          {!isReps && maxValue !== undefined && (
+            <Stack direction="row" spacing={2}>
+              <TextField
+                label={t('exercises.form.weight')}
+                type="number"
+                value={formData.weight}
+                onChange={(e) => {
+                  onFormChange('weight')(e as React.ChangeEvent<HTMLInputElement>)
+                  const weight = e.target.value
+                  setPercentDraft(weight ? ((Number(weight) / maxValue) * 100).toFixed(1) : '')
+                }}
+                required
+                fullWidth
+                slotProps={{ htmlInput: { min: 1, max: 300 } }}
+                helperText={t('exercises.form.weightHelper')}
+              />
+              <TextField
+                label={t('exercises.form.weightPercent')}
+                type="number"
+                value={percentDraft}
+                onChange={(e) => {
+                  const pct = e.target.value
+                  setPercentDraft(pct)
+                  const weight = pct === '' ? '' : ((Number(pct) * maxValue) / 100).toFixed(1)
+                  onFormChange('weight')({
+                    target: { value: weight },
+                  } as React.ChangeEvent<HTMLInputElement>)
+                }}
+                fullWidth
+                helperText={t('exercises.form.weightPercentHelper')}
+              />
+            </Stack>
           )}
           <TextField
             label={t('exercises.form.reps')}

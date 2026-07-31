@@ -4,4 +4,4 @@ import { EXERCISE_NAMES } from '../../types/exercise'
 import type { Period } from './ChartFilters/PeriodSelector'
 
 export const selectedExerciseAtom = atom<ExerciseName>(EXERCISE_NAMES[0])
-export const periodAtom = atom<Period>(7)
+export const periodAtom = atom<Period>(90)

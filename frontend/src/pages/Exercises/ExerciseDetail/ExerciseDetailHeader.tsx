@@ -1,4 +1,4 @@
-import { ArrowBack, Percent } from '@mui/icons-material'
+import { ArrowBack, Delete, Percent } from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -24,6 +24,7 @@ interface ExerciseDetailHeaderProps {
   metric: ExerciseMetric
   onBack: () => void
   onLogWeight: () => void
+  onDelete: () => void
 }
 
 export default function ExerciseDetailHeader({
@@ -32,6 +33,7 @@ export default function ExerciseDetailHeader({
   metric,
   onBack,
   onLogWeight,
+  onDelete,
 }: ExerciseDetailHeaderProps) {
   const [open, setOpen] = useState(false)
   const { t } = useTranslation()
@@ -87,6 +89,15 @@ export default function ExerciseDetailHeader({
                 <Percent />
               </IconButton>
             </span>
+          </Tooltip>
+          <Tooltip title={t('common.delete')}>
+            <IconButton
+              onClick={onDelete}
+              color="error"
+              sx={{ border: 1, borderColor: 'divider' }}
+            >
+              <Delete />
+            </IconButton>
           </Tooltip>
           <Button variant="contained" onClick={onLogWeight}>
             {t('exerciseDetail.header.logEntry')}
