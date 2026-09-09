@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import type { IWeightEntry } from '../../models/Exercise';
+import type { ExerciseName, IWeightEntry } from '../../models/Exercise';
 import Exercise from '../../models/Exercise';
 import { buildUserNameMap } from './helpers';
 
@@ -40,7 +40,7 @@ function aggregateByWeek(history: IWeightEntry[]): Partial<IWeightEntry>[] {
 
 export async function getAnalyticsByName(req: any, res: Response) {
   try {
-    const name = decodeURIComponent(req.params.name);
+    const name = decodeURIComponent(req.params.name) as ExerciseName;
     const days = Math.max(1, parseInt(String(req.query.days ?? '7'), 10) || 7);
     const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
     const weeklyAggregation = days >= 30;
