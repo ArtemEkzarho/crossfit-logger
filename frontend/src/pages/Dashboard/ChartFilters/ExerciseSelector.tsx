@@ -1,14 +1,28 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { useAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
 import { EXERCISE_NAMES, getExerciseMetric } from '../../../types/exercise'
 import { selectedExerciseAtom } from '../atoms'
 
 export default function ExerciseSelector() {
   const { t } = useTranslation()
   const [selected, setSelected] = useAtom(selectedExerciseAtom)
+  const [, setSearchParams] = useSearchParams()
   const metric = getExerciseMetric(selected)
   const label = metric === 'reps' ? t('dashboard.metricReps') : t('dashboard.metricWeight')
+
+  const handleChange = (name: (typeof EXERCISE_NAMES)[number]) => {
+    setSelected(name)
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('exercise', name)
+        return next
+      },
+      { replace: true }
+    )
+  }
 
   return (
     <FormControl size="small" sx={{ minWidth: 220 }}>
@@ -17,7 +31,7 @@ export default function ExerciseSelector() {
         labelId="exercise-select-label"
         value={selected}
         label={label}
-        onChange={(e) => setSelected(e.target.value as (typeof EXERCISE_NAMES)[number])}
+        onChange={(e) => handleChange(e.target.value as (typeof EXERCISE_NAMES)[number])}
       >
         {EXERCISE_NAMES.map((name) => (
           <MenuItem key={name} value={name}>

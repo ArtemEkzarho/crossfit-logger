@@ -1,12 +1,28 @@
-import { SignInButton, SignUpButton, Show } from '@clerk/react'
+import { SignInButton, SignUpButton, Show, useAuth } from '@clerk/react'
 import { FitnessCenter } from '@mui/icons-material'
-import { Container, Typography, Box, Button, Card, CardContent, Stack } from '@mui/material'
+import { Container, Typography, Box, Button, Stack, CircularProgress } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import { Navigate } from 'react-router-dom'
 import { useAppNavigation } from '../hooks/useAppNavigation'
 
 export default function Home() {
   const { t } = useTranslation()
-  const { goTo, localePath } = useAppNavigation()
+  const { localePath } = useAppNavigation()
+  const { isLoaded, isSignedIn } = useAuth()
+
+  if (!isLoaded) {
+    return (
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (isSignedIn) {
+    return <Navigate to={localePath('/exercises')} replace />
+  }
 
   return (
     <Container maxWidth="md">
@@ -33,55 +49,6 @@ export default function Home() {
             </SignUpButton>
           </Stack>
         </Show>
-
-        <Show when="signed-in">
-          <Box sx={{ mt: 4 }}>
-            <Button variant="contained" size="large" onClick={() => goTo(localePath('/dashboard'))}>
-              {t('home.goDashboard')}
-            </Button>
-          </Box>
-        </Show>
-
-        <Box sx={{ mt: 6 }}>
-          <Typography variant="h4" gutterBottom>
-            {t('home.features')}
-          </Typography>
-          <Stack
-            direction="row"
-            spacing={2}
-            useFlexGap
-            sx={{ mt: 3, flexWrap: 'wrap', justifyContent: 'center' }}
-          >
-            <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {t('home.feature.trackWorkouts')}
-                </Typography>
-                <Typography color="text.secondary">
-                  {t('home.feature.trackWorkoutsDesc')}
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {t('home.feature.monitorProgress')}
-                </Typography>
-                <Typography color="text.secondary">
-                  {t('home.feature.monitorProgressDesc')}
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card sx={{ flex: '1 1 300px', maxWidth: 350 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {t('home.feature.setGoals')}
-                </Typography>
-                <Typography color="text.secondary">{t('home.feature.setGoalsDesc')}</Typography>
-              </CardContent>
-            </Card>
-          </Stack>
-        </Box>
       </Box>
     </Container>
   )
