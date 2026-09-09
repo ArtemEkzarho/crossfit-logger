@@ -1,5 +1,6 @@
 import { Add, Delete } from '@mui/icons-material'
 import {
+  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -17,6 +18,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import { EXERCISE_NAMES } from '../../types/exercise'
 import type { WodMovement, WodType } from '../../types/wod'
 import { WOD_TYPES } from '../../types/wod'
 
@@ -32,7 +34,7 @@ export const emptyWodForm = (): WodFormData => ({
   date: new Date().toISOString().split('T')[0],
   type: 'forTime',
   name: '',
-  movements: [{ name: '', reps: undefined, weight: undefined }],
+  movements: [{ name: '', reps: undefined, weight: undefined, sets: undefined }],
   notes: '',
 })
 
@@ -63,7 +65,12 @@ export default function WodFormDialog({
   }
 
   const addMovement = () =>
-    set({ movements: [...formData.movements, { name: '', reps: undefined, weight: undefined }] })
+    set({
+      movements: [
+        ...formData.movements,
+        { name: '', reps: undefined, weight: undefined, sets: undefined },
+      ],
+    })
 
   const removeMovement = (i: number) =>
     set({ movements: formData.movements.filter((_, idx) => idx !== i) })
@@ -115,13 +122,23 @@ export default function WodFormDialog({
             </Typography>
             <Stack spacing={1}>
               {formData.movements.map((m, i) => (
-                <Stack key={i} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                  <TextField
-                    label={t('wods.form.movement.name')}
+                <Stack
+                  key={i}
+                  direction="row"
+                  spacing={1}
+                  useFlexGap
+                  sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+                >
+                  <Autocomplete
+                    freeSolo
                     size="small"
-                    value={m.name}
-                    onChange={(e) => updateMovement(i, { name: e.target.value })}
-                    sx={{ flex: 2 }}
+                    options={EXERCISE_NAMES}
+                    inputValue={m.name}
+                    onInputChange={(_, value) => updateMovement(i, { name: value })}
+                    sx={{ flex: '2 1 160px' }}
+                    renderInput={(params) => (
+                      <TextField {...params} label={t('wods.form.movement.name')} />
+                    )}
                   />
                   <TextField
                     label={t('wods.form.movement.reps')}
@@ -132,7 +149,7 @@ export default function WodFormDialog({
                       updateMovement(i, { reps: e.target.value ? Number(e.target.value) : undefined })
                     }
                     slotProps={{ htmlInput: { min: 1 } }}
-                    sx={{ flex: 1 }}
+                    sx={{ flex: '1 1 90px' }}
                   />
                   <TextField
                     label={t('wods.form.movement.weight')}
@@ -143,7 +160,18 @@ export default function WodFormDialog({
                       updateMovement(i, { weight: e.target.value ? Number(e.target.value) : undefined })
                     }
                     slotProps={{ htmlInput: { min: 0 } }}
-                    sx={{ flex: 1 }}
+                    sx={{ flex: '1 1 90px' }}
+                  />
+                  <TextField
+                    label={t('wods.form.movement.sets')}
+                    type="number"
+                    size="small"
+                    value={m.sets ?? ''}
+                    onChange={(e) =>
+                      updateMovement(i, { sets: e.target.value ? Number(e.target.value) : undefined })
+                    }
+                    slotProps={{ htmlInput: { min: 1 } }}
+                    sx={{ flex: '1 1 90px' }}
                   />
                   <IconButton
                     size="small"

@@ -17,16 +17,16 @@ import {
   useExercise,
   useLogWeight,
   useUpdateWeightEntry,
-} from '../../api/hooks/useExercises'
-import { useAppNavigation } from '../../hooks/useAppNavigation'
-import type { ExerciseName, UpdateWeightEntryData, WeightEntry } from '../../types/exercise'
-import { getExerciseMetric, getMaxValue } from '../../types/exercise'
-import DeleteConfirmDialog from './DeleteConfirmDialog'
-import DeleteEntryDialog from './ExerciseDetail/DeleteEntryDialog'
-import EditEntryDialog, { type EditEntryState } from './ExerciseDetail/EditEntryDialog'
-import ExerciseDetailHeader from './ExerciseDetail/ExerciseDetailHeader'
-import WeightHistory from './ExerciseDetail/WeightHistory'
-import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from './ExerciseFormDialog'
+} from '../../../api/hooks/useExercises'
+import { useAppNavigation } from '../../../hooks/useAppNavigation'
+import type { ExerciseName, UpdateWeightEntryData, WeightEntry } from '../../../types/exercise'
+import { getExerciseMetric, getMaxValue } from '../../../types/exercise'
+import DeleteConfirmDialog from '../DeleteConfirmDialog'
+import ExerciseFormDialog, { emptyForm, type ExerciseFormData } from '../ExerciseFormDialog'
+import DeleteEntryDialog from './DeleteEntryDialog'
+import EditEntryDialog, { type EditEntryState } from './EditEntryDialog'
+import ExerciseDetailHeader from './ExerciseDetailHeader'
+import WeightHistory from './WeightHistory'
 
 export default function ExerciseDetail() {
   const { name } = useParams<{ name: string }>()
@@ -131,6 +131,10 @@ export default function ExerciseDetail() {
     }
   }
 
+  const handleViewDashboard = () => {
+    goTo(localePath(`/dashboard?exercise=${encodeURIComponent(decodedName)}&period=90`))
+  }
+
   const handleDeleteExercise = async () => {
     try {
       await deleteExercise.mutateAsync(decodedName)
@@ -161,6 +165,7 @@ export default function ExerciseDetail() {
             onBack={() => goTo(localePath('/exercises'))}
             onLogWeight={() => {}}
             onDelete={() => {}}
+            onViewDashboard={() => {}}
           />
           <Alert severity="error">
             {error instanceof Error ? error.message : t('exerciseDetail.notFound')}
@@ -189,6 +194,7 @@ export default function ExerciseDetail() {
             setLogFormOpen(true)
           }}
           onDelete={() => setDeleteExerciseOpen(true)}
+          onViewDashboard={handleViewDashboard}
         />
 
         <Divider sx={{ mb: 3 }} />

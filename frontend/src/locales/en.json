@@ -22,7 +22,6 @@
   "home": {
     "title": "Welcome to Crossfit Logger",
     "subtitle": "Track your workouts, monitor your progress, and achieve your fitness goals.",
-    "goDashboard": "Go to Dashboard",
     "features": "Features",
     "feature": {
       "trackWorkouts": "Track Workouts",
@@ -107,6 +106,7 @@
       "personalBest": "personal best",
       "noPR": "No PR yet",
       "percentOfPR": "% of PR",
+      "viewInDashboard": "View in Dashboard",
       "logEntry": "Log Entry",
       "prDialogTitle": "% of PR ({{value}} {{unit}})"
     },
@@ -134,6 +134,7 @@
   "wods": {
     "title": "WODs",
     "subtitle": "Log and track your workouts of the day.",
+    "addButton": "Add WOD",
     "successLogged": "WOD logged successfully",
     "successDeleted": "WOD deleted",
     "empty": "No WODs yet",
@@ -156,7 +157,8 @@
       "movement": {
         "name": "Movement",
         "reps": "Reps",
-        "weight": "Weight (kg)"
+        "weight": "Weight (kg)",
+        "sets": "Sets"
       },
       "result": "Result",
       "timeMinutes": "Minutes",

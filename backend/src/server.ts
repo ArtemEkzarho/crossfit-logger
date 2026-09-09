@@ -1,4 +1,4 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { clerkMiddleware } from '@clerk/express';
@@ -8,7 +8,7 @@ import wodRoutes from './routes/wods';
 
 dotenv.config({ path: '.env.local' });
 
-const app: Express = express();
+const app = express();
 
 // Middleware
 const allowedOrigins = [

@@ -22,7 +22,6 @@
   "home": {
     "title": "Ласкаво просимо до Crossfit Logger",
     "subtitle": "Відстежуйте тренування, моніторте прогрес і досягайте своїх фітнес-цілей.",
-    "goDashboard": "Перейти до дашборду",
     "features": "Можливості",
     "feature": {
       "trackWorkouts": "Запис тренувань",
@@ -107,6 +106,7 @@
       "personalBest": "особистий рекорд",
       "noPR": "Рекорду ще немає",
       "percentOfPR": "% від рекорду",
+      "viewInDashboard": "Показати в дашборді",
       "logEntry": "Новий запис",
       "prDialogTitle": "% від рекорду ({{value}} {{unit}})"
     },
@@ -134,6 +134,7 @@
   "wods": {
     "title": "WOD",
     "subtitle": "Записуйте та відстежуйте тренування дня.",
+    "addButton": "Додати WOD",
     "successLogged": "WOD успішно записано",
     "successDeleted": "WOD видалено",
     "empty": "WOD ще немає",
@@ -156,7 +157,8 @@
       "movement": {
         "name": "Рух",
         "reps": "Повторення",
-        "weight": "Вага (кг)"
+        "weight": "Вага (кг)",
+        "sets": "Підходи"
       },
       "result": "Результат",
       "timeMinutes": "Хвилини",

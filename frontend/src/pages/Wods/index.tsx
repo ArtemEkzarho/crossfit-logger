@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material'
-import { Alert, Box, CircularProgress, Container, Fab, Snackbar, Stack, Typography } from '@mui/material'
+import { Alert, Box, Button, CircularProgress, Container, Snackbar, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAddWodResult, useCreateWod, useDeleteWod, useDeleteWodResult, useWods } from '../../api/hooks/useWods'
@@ -38,9 +38,11 @@ export default function Wods() {
       notes: formData.notes || undefined,
     }
     try {
-      await createWod.mutateAsync(data)
+      const created = await createWod.mutateAsync(data)
       showSnack(t('wods.successLogged'))
       setFormOpen(false)
+      setResultForm(emptyResultForm())
+      setResultTarget(created)
     } catch (err) {
       showSnack(err instanceof Error ? err.message : 'An error occurred', 'error')
     }
@@ -119,12 +121,31 @@ export default function Wods() {
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          {t('wods.title')}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          {t('wods.subtitle')}
-        </Typography>
+        <Stack
+          direction="row"
+          spacing={2}
+          useFlexGap
+          sx={{ justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', mb: 2 }}
+        >
+          <Box>
+            <Typography variant="h3" component="h1" gutterBottom>
+              {t('wods.title')}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {t('wods.subtitle')}
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => {
+              setFormData(emptyWodForm())
+              setFormOpen(true)
+            }}
+          >
+            {t('wods.addButton')}
+          </Button>
+        </Stack>
 
         {!wods?.length ? (
           <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
@@ -144,15 +165,6 @@ export default function Wods() {
             ))}
           </Stack>
         )}
-
-        <Fab
-          color="primary"
-          aria-label="add"
-          sx={{ position: 'fixed', bottom: 24, right: 24 }}
-          onClick={() => { setFormData(emptyWodForm()); setFormOpen(true) }}
-        >
-          <Add />
-        </Fab>
 
         <WodFormDialog
           open={formOpen}
