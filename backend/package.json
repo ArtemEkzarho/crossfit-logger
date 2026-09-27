@@ -4,27 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@12.6.0",
   "dependencies": {
-    "@clerk/express": "^2.0.6",
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^5.2.1",
-    "mongoose": "^9.3.1"
+    "@clerk/express": "2.1.72",
+    "cors": "2.8.6",
+    "dotenv": "18.0.4",
+    "express": "5.2.1",
+    "mongoose": "9.10.2"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/node": "^25.5.0",
-    "nodemon": "^3.1.14",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "~5.9.3"
+    "@types/cors": "2.8.19",
+    "@types/express": "5.0.6",
+    "@types/node": "26.6.3",
+    "nodemon": "3.1.14",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
   }
 }
