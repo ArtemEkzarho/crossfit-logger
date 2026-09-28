@@ -1,12 +1,12 @@
 import express from 'express';
-import { requireAuth } from '@clerk/express';
+import { requireUser } from '../../middleware/requireUser';
 import { getAnalyticsByName } from './analytics';
 import { updateEntry, deleteEntry } from './entries';
 import { listExercises, getExercise, logWeight, deleteExercise } from './exercises';
 
 const router = express.Router();
 
-router.use(requireAuth());
+router.use(requireUser);
 
 // Analytics — must be registered before /:name to avoid shadowing
 router.get('/analytics/:name', getAnalyticsByName);

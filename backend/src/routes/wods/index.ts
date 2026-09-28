@@ -1,10 +1,10 @@
 import express from 'express';
-import { requireAuth } from '@clerk/express';
+import { requireUser } from '../../middleware/requireUser';
 import { listWods, createWod, deleteWod, addResult, deleteResult } from './wods';
 
 const router = express.Router();
 
-router.use(requireAuth());
+router.use(requireUser);
 
 router.get('/', listWods);
 router.post('/', createWod);
