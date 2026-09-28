@@ -12,6 +12,9 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@12.6.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
   "dependencies": {
     "@clerk/express": "2.1.72",
     "cors": "2.8.6",
